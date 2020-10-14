@@ -73,12 +73,12 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
               width: ScreenSize.width,
               title: 'Flexible Gym Pants',
               iconbtn: IconButton(
-                  icon: Icon(Icons.keyboard_arrow_left_sharp,
+                  icon: Icon(Icons.add,
                       color: Colors.black),
                   onPressed: null),
               trailingIcon: IconButton(
                   icon: Icon(
-                    Icons.shopping_bag_outlined,
+                    Icons.add,
                     color: Colors.black,
                   ),
                   onPressed: null)),

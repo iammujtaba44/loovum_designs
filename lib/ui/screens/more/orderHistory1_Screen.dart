@@ -146,7 +146,7 @@ _listview(BuildContext context) {
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                                 trailing:
-                                    Icon(Icons.keyboard_arrow_right_sharp),
+                                    Icon(Icons.add),
                                 onTap: () {},
                               )
                             ]),
