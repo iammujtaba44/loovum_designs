@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:loovum_designs/ui/screens/blog/blog_1_screen.dart';
 import 'package:loovum_designs/ui/screens/blog/blog_screen.dart';
+import 'package:loovum_designs/ui/screens/review_purchases_screen.dart';
+import 'package:loovum_designs/ui/screens/sign_in_screen.dart';
+import 'package:loovum_designs/ui/screens/sign_up_screen.dart';
 import 'package:loovum_designs/ui/screens/splash_screen.dart';
 import 'package:preview/preview.dart';
 
@@ -31,7 +34,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SplashScreen(),
+      home: SignUpScreen(),
     );
   }
 }

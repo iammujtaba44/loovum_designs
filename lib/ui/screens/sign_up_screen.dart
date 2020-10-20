@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/ui/screens/home/home.dart';
+import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 import 'package:preview/preview.dart';
@@ -43,39 +45,56 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController emailController,
+      passwordController,
+      confirmpassController,
+      nameController;
+
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    nameController = TextEditingController();
+    confirmpassController = TextEditingController();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     return SafeArea(
       child: Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 25.h,
-            ),
-            Center(
-              child: Container(
-                height: 100.h,
-                width: 200.w,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                  image: AssetImage('assets/images/logo.png'),
-                )),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 25.h,
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 10.w, bottom: 10.h),
-              child: Icon(
-                Icons.arrow_back_ios,
-                size: 20,
+              Center(
+                child: Container(
+                  height: 100.h,
+                  width: 200.w,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    image: AssetImage('assets/images/logo.png'),
+                  )),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 28.0,
-            ),
-            _bodyContainer()
-          ],
+              Padding(
+                padding: EdgeInsets.only(left: 10.w, bottom: 10.h),
+                child: Icon(
+                  Icons.arrow_back_ios,
+                  size: 20,
+                ),
+              ),
+              SizedBox(
+                height: 28.0,
+              ),
+              _bodyContainer()
+            ],
+          ),
         ),
       ),
     );
@@ -117,15 +136,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SizedBox(
               height: ScreenSize.height * 0.06,
             ),
-            textField('Name', 'Faraz Ahmed'),
+            textField('Name', 'Faraz Ahmed', controller: nameController),
             SizedBox(
               height: ScreenSize.height * 0.055,
             ),
-            textField('Email', 'farazahmed@gmail.com'),
+            textField('Email', 'farazahmed@gmail.com',
+                controller: emailController),
             SizedBox(
               height: ScreenSize.height * 0.055,
             ),
-            textField('Password', 'abc123123', isObscure: true),
+            textField('Password', 'abc123123',
+                isObscure: true, controller: passwordController),
             SizedBox(
               height: ScreenSize.height * 0.07,
             ),
@@ -138,12 +159,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
                 color: Color(0xFFE6798A),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
-                },
+                onPressed: _onPressedBtn,
               ),
             ),
           ],
@@ -151,9 +167,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+  _onPressedBtn() {
+    if (emailController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty &&
+        nameController.text.isNotEmpty) {
+      if (passwordController.text.length == 8) {
+        bool result = GetMethods.registerInit(
+            email: emailController.text,
+            password: passwordController.text,
+            name: nameController.text,
+            confirmPassword: passwordController.text);
+
+        if (result == true) {
+          CustomToast(text: 'Register Successfully');
+          emailController.clear();
+          passwordController.clear();
+          nameController.clear();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Home()),
+          );
+        } else
+          CustomToast(text: "The email has already been taken.");
+      } else
+        CustomToast(text: 'Password must be 8 characters');
+    } else
+      CustomToast(text: 'Please fill all fields');
+  }
 }
 
-Column textField(String title, String hintText, {bool isObscure = false}) {
+Column textField(String title, String hintText,
+    {bool isObscure = false, TextEditingController controller}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -162,9 +207,10 @@ Column textField(String title, String hintText, {bool isObscure = false}) {
         style: TextStyle(),
       ),
       TextField(
+        controller: controller == null ? null : controller,
         obscureText: isObscure,
         decoration: InputDecoration(
-          hintStyle: TextStyle(color: Colors.black),
+          hintStyle: TextStyle(color: Colors.black45),
           hintText: hintText,
           focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Color(0xFF00C569))),

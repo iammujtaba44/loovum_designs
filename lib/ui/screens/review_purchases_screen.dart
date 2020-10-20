@@ -31,17 +31,17 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Scaffold(body: Center(child: SignUpScreen())),
+      home: Scaffold(body: Center(child: _SignUpScreen())),
     );
   }
 }
 
-class SignUpScreen extends StatefulWidget {
+class _SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpScreenState extends State<_SignUpScreen> {
   List<String> list = [
     'Order History',
     'Review Puchases',
@@ -57,24 +57,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Column(
       children: [
         appBar(height: 120.h, width: 750.w, title: 'Review Purchases'),
-            SizedBox(height: 50.h,),
+        SizedBox(
+          height: 50.h,
+        ),
         Text(
           'Nothing to review at this time',
           style: TextStyle(fontSize: 30.h),
         ),
-        SizedBox(height: 20.h,),
+        SizedBox(
+          height: 20.h,
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6.0),
           child: Container(
             width: 550.w,
-                    child: Text(
-                'Want to review a product? Go check out today\’s products and buy one. We\’d love to see what you think of thevarious products at Loovum.', style: TextStyle(fontSize: 20.h), textAlign: TextAlign.center,),
+            child: Text(
+              'Want to review a product? Go check out today\’s products and buy one. We\’d love to see what you think of thevarious products at Loovum.',
+              style: TextStyle(fontSize: 20.h),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
-        SizedBox(height: 20.h,),
-        pinkButton(height: 70.h, width: 500.w, isRounded: true, title: 'Start Shopping', func: () {
-          
-        })
+        SizedBox(
+          height: 20.h,
+        ),
+        pinkButton(
+            height: 70.h,
+            width: 500.w,
+            isRounded: true,
+            title: 'Start Shopping',
+            func: () {})
       ],
     );
   }

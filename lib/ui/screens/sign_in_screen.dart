@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/sign_up_screen.dart';
+import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 import 'package:preview/preview.dart';
 
@@ -42,32 +46,42 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  TextEditingController emailController, passwordController;
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     return SafeArea(
       child: Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 50.h,
-            ),
-            Center(
-              child: Container(
-                height: 50,
-                width: 100,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                  image: AssetImage('assets/images/logo.png'),
-                )),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 50.h,
               ),
-            ),
-            SizedBox(
-              height: 28.0,
-            ),
-            _bodyContainer(),
-          ],
+              Center(
+                child: Container(
+                  height: 50,
+                  width: 100,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    image: AssetImage('assets/images/logo.png'),
+                  )),
+                ),
+              ),
+              SizedBox(
+                height: 28.0,
+              ),
+              _bodyContainer(),
+            ],
+          ),
         ),
       ),
     );
@@ -113,11 +127,13 @@ class _SignInScreenState extends State<SignInScreen> {
             SizedBox(
               height: ScreenSize.height * 0.09,
             ),
-            textField('Email', 'farazahmed@gmail.com'),
+            textField('Email', 'farazahmed@gmail.com',
+                controller: emailController),
             SizedBox(
               height: 50.0,
             ),
-            textField('Password', 'abc123123', isObscure: true),
+            textField('Password', 'abc123123',
+                isObscure: true, controller: passwordController),
             SizedBox(
               height: 10,
             ),
@@ -138,10 +154,24 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 color: Color(0xFFE6798A),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpScreen()),
-                  );
+                  if (emailController.text.isNotEmpty &&
+                      passwordController.text.isNotEmpty) {
+                    bool result = GetMethods.loginInit(
+                        email: emailController.text,
+                        password: passwordController.text);
+
+                    if (result == true) {
+                      CustomToast(text: 'Login Successfully');
+                      emailController.clear();
+                      passwordController.clear();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignUpScreen()));
+                    } else
+                      CustomToast(text: 'Email or password is wrong');
+                  } else
+                    CustomToast(text: 'Please fill all fields');
                 },
               ),
             ),
@@ -151,7 +181,8 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Column textField(String title, String hintText, {bool isObscure = false}) {
+  Column textField(String title, String hintText,
+      {bool isObscure = false, TextEditingController controller}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -160,9 +191,10 @@ class _SignInScreenState extends State<SignInScreen> {
           style: TextStyle(),
         ),
         TextField(
+          controller: controller == null ? null : controller,
           obscureText: isObscure,
           decoration: InputDecoration(
-            hintStyle: TextStyle(color: Colors.black),
+            hintStyle: TextStyle(color: Colors.black45),
             hintText: hintText,
             focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Color(0xFFE6798A))),
