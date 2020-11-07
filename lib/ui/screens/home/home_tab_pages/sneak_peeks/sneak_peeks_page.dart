@@ -1,6 +1,9 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/RequestServices.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/sneak_peeks/sneak_peeks_dialog.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
@@ -51,109 +54,138 @@ class _SneakPeeksPageState extends State<SneakPeeksPage> {
     'Accessories',
     'Jewellery'
   ];
+  bool hasData = false;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    bool result = await GetMethods.requiredDataInit();
+    if (result) {
+      setState(() {
+        hasData = true;
+      });
+    } else
+      setState(() {
+        hasData = false;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     var ScreenSize = MediaQuery.of(context).size;
     ScreenUtil.init(context, width: 750, height: 1334);
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  color: Colors.grey,
-                  width: ScreenSize.width,
-                  height: getScreenHeight(context) == 0
-                      ? ScreenSize.height * 0.45
-                      : getScreenHeight(context) == 1
-                          ? ScreenSize.height * 0.39
-                          : ScreenSize.height * 0.35,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IconButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        ExitConfirmationDialog());
-                              },
-                              icon: Icon(
-                                Icons.help_outline,
-                                color: Colors.white,
-                                size: 27.0,
-                              ),
-                            )),
-                      ],
-                    ),
-                    Text(
-                      'SNEAK PEEKS',
-                      style: TextStyle(letterSpacing: 4, color: Colors.white),
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Text(
-                      'Tomorrow\'s Products',
-                      style: ScreenSize.height > 650 && ScreenSize.height < 800
-                          ? TextStyle(
-                              letterSpacing: 2,
-                              fontSize: 20,
-                              color: Colors.white)
-                          : TextStyle(
-                              letterSpacing: 2,
-                              fontSize: 23,
-                              color: Colors.white),
-                    ),
-                    SizedBox(
-                      height: 15.h,
-                    ),
-                    _getDeviderText('shoppable in'),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    _container(),
-                    SizedBox(
-                      height: 26.0,
-                    ),
-                    Container(
-                        width: 600.w,
-                        child: Text(
-                          'Sneak Peeks become visible after 2:00 pm ET. Purchasing a product prior will allow instant access.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 13, color: Colors.white),
-                        )),
-                  ],
-                ),
-              ],
+    return !hasData
+        ? Container(
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 30.0),
-              child: Text(
-                'Why Wait? Shop Now',
-                style: TextStyle(fontWeight: FontWeight.w500),
+          )
+        : SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        color: Colors.grey,
+                        width: ScreenSize.width,
+                        height: getScreenHeight(context) == 0
+                            ? ScreenSize.height * 0.45
+                            : getScreenHeight(context) == 1
+                                ? ScreenSize.height * 0.39
+                                : ScreenSize.height * 0.35,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              ExitConfirmationDialog());
+                                    },
+                                    icon: Icon(
+                                      Icons.help_outline,
+                                      color: Colors.white,
+                                      size: 27.0,
+                                    ),
+                                  )),
+                            ],
+                          ),
+                          Text(
+                            'SNEAK PEEKS',
+                            style: TextStyle(
+                                letterSpacing: 4, color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Text(
+                            'Tomorrow\'s Products',
+                            style: ScreenSize.height > 650 &&
+                                    ScreenSize.height < 800
+                                ? TextStyle(
+                                    letterSpacing: 2,
+                                    fontSize: 20,
+                                    color: Colors.white)
+                                : TextStyle(
+                                    letterSpacing: 2,
+                                    fontSize: 23,
+                                    color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          _getDeviderText('shoppable in'),
+                          SizedBox(
+                            height: 30.h,
+                          ),
+                          _container(),
+                          SizedBox(
+                            height: 26.0,
+                          ),
+                          Container(
+                              width: 600.w,
+                              child: Text(
+                                'Sneak Peeks become visible after 2:00 pm ET. Purchasing a product prior will allow instant access.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.white),
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 30.0),
+                    child: Text(
+                      'Why Wait? Shop Now',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  _bodyContainer(),
+                ],
               ),
             ),
-            _bodyContainer(),
-          ],
-        ),
-      ),
-    );
+          );
   }
 
   _bodyContainer() {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
-          children: List.generate(_list.length, (index) {
+          children:
+              List.generate(Constants.requiredModel.categories.length, (index) {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 11.0),
           child: GestureDetector(
@@ -176,12 +208,16 @@ class _SneakPeeksPageState extends State<SneakPeeksPage> {
                   SizedBox(
                     width: 25,
                   ),
-                  Text(_list[index], style: TextStyle(fontSize: 18.0)),
+                  Text(Constants.requiredModel.categories[index].name,
+                      style: TextStyle(fontSize: 18.0)),
                   Spacer(),
                   Container(
                     // height: 100.h,
                     width: 230.w,
                     color: Colors.grey,
+                    child: Image.network(
+                      Constants.requiredModel.categories[index].banner,
+                    ),
                   ),
                 ],
               ),
