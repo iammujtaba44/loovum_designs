@@ -172,7 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (emailController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
         nameController.text.isNotEmpty) {
-      if (passwordController.text.length == 8) {
+      if (passwordController.text.length >= 8) {
         bool result = GetMethods.registerInit(
             email: emailController.text,
             password: passwordController.text,
