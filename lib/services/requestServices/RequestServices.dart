@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:loovum_designs/services/apis/Apis.dart';
 import 'package:loovum_designs/services/models/LoginModel.dart';
+import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/models/RegisterModel.dart';
+import 'package:loovum_designs/services/models/RequiredModel.dart';
 import 'package:loovum_designs/services/models/UserModel.dart';
 
 class RequestServices {
@@ -49,6 +51,30 @@ class RequestServices {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       var map = json.decode(response.body);
       return userModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  static Future<MainHomeModel> productHome() async {
+    var response = await http.get(ProductHomeUrl);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      return mainHomeModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  static Future<RequiredModel> requiredData() async {
+    var response = await http.get(RequiredUrl);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      return requiredModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
       return null;

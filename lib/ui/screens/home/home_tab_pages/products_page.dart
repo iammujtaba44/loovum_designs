@@ -1,6 +1,8 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:preview/preview.dart';
@@ -43,25 +45,48 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
+  bool hasData = false;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    bool result = await GetMethods.productHomeInit();
+    if (result) {
+      setState(() {
+        hasData = true;
+      });
+    } else
+      setState(() {
+        hasData = false;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
-    return ListView(
-      children: [
-        _item(),
-        _item(),
-      ],
-    );
+    return !hasData
+        ? Container(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+        : ListView(
+            children: [
+              _item(),
+              _item(),
+            ],
+          );
   }
 
- _containerIner()
- {
-   return Container(
-    
-    padding: EdgeInsets.symmetric(horizontal: 18.0) ,
-
-    child: Column(children: [
-       Row(
+  _containerIner() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 18.0),
+      child: Column(
+        children: [
+          Row(
             children: [
               Text('Flexible gym sweat pants | S - XL'),
               Spacer(),
@@ -75,53 +100,56 @@ class _ProductsPageState extends State<ProductsPage> {
                   SizedBox(
                     width: 5.w,
                   ),
-                  Text('503',style: TextStyle(color: Colors.grey),)
+                  Text(
+                    '503',
+                    style: TextStyle(color: Colors.grey),
+                  )
                 ],
               ),
             ],
           ),
-         Row(
-              children: [
-                Text(
-                  '\$14.51',
-                  style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
-                ),
-                SizedBox(
-                  width: 20.w,
-                ),
-                Row(
-                  children: [
-                    Text(
-                      '\$8.23',
-                      style: TextStyle(
-                          decoration: TextDecoration.lineThrough, fontSize: 12),
+          Row(
+            children: [
+              Text(
+                '\$14.51',
+                style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
+              ),
+              SizedBox(
+                width: 20.w,
+              ),
+              Row(
+                children: [
+                  Text(
+                    '\$8.23',
+                    style: TextStyle(
+                        decoration: TextDecoration.lineThrough, fontSize: 12),
+                  ),
+                  SizedBox(
+                    width: 10.w,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8.0, right: 8.0, top: 2, bottom: 2),
+                      child: Text(
+                        'FREE SHIPPING',
+                        style: TextStyle(fontSize: 12),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 8.0, right: 8.0, top: 2, bottom: 2),
-                        child: Text(
-                          'FREE SHIPPING',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          
-    ],),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-   );
- }
   Padding _item() {
     var ScreenSize = MediaQuery.of(context).size;
     return Padding(
@@ -153,7 +181,10 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
           Row(
             children: [
-              Text('Flexible gym sweat pants | S - XL',style: TextStyle(fontSize: 15.0),),
+              Text(
+                'Flexible gym sweat pants | S - XL',
+                style: TextStyle(fontSize: 15.0),
+              ),
               Spacer(),
               Row(
                 children: [
@@ -165,7 +196,10 @@ class _ProductsPageState extends State<ProductsPage> {
                   SizedBox(
                     width: 5.w,
                   ),
-                  Text('503',style: TextStyle(color: Colors.grey),)
+                  Text(
+                    '503',
+                    style: TextStyle(color: Colors.grey),
+                  )
                 ],
               ),
             ],
@@ -189,7 +223,8 @@ class _ProductsPageState extends State<ProductsPage> {
                     Text(
                       '\$8.23',
                       style: TextStyle(
-                          decoration: TextDecoration.lineThrough, fontSize: 13.0),
+                          decoration: TextDecoration.lineThrough,
+                          fontSize: 13.0),
                     ),
                     SizedBox(
                       width: 10.w,
