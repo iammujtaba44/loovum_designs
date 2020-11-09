@@ -1,7 +1,12 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loovum_designs/services/models/search/EndingSoon.dart';
+
+import 'package:loovum_designs/services/models/search/PopularModel.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/search/collections_page.dart';
 import 'package:loovum_designs/ui/shared/roundedButton.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
@@ -57,17 +62,56 @@ class _SearchPageState extends State<SearchPage> {
   ];
 
   bool hasData = false;
+  bool popularHasData = false;
+  bool endingHasData = false;
+  bool collectionHasData = false;
 
   getSearchResult() async {
     bool result = await GetMethods.searchDataInit('a');
     if (result) {
-      setState(() {
-        hasData = true;
-      });
+      if (mounted)
+        setState(() {
+          hasData = true;
+        });
     } else {
-      setState(() {
-        hasData = false;
-      });
+      if (mounted)
+        setState(() {
+          hasData = false;
+        });
+    }
+    print(Constants.searchModel.products[0]);
+  }
+
+  Future getPopularData() async {
+    print('OKKa');
+    bool result = await GetMethods.popularInit();
+    if (result) {
+      if (mounted)
+        setState(() {
+          popularHasData = true;
+        });
+    } else {
+      if (mounted)
+        setState(() {
+          popularHasData = false;
+        });
+    }
+    // print(Constants.popularModel.data[0]);
+  }
+
+  getEndingData() async {
+    print('OKKa2');
+    bool result = await GetMethods.endingSoonInit();
+    if (result) {
+      if (mounted)
+        setState(() {
+          endingHasData = true;
+        });
+    } else {
+      if (mounted)
+        setState(() {
+          endingHasData = false;
+        });
     }
   }
 
@@ -75,7 +119,11 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getSearchResult();
+
+    //  getSearchResult();
+    getPopularData();
+
+    // print(Constants.searchModel);
   }
 
   @override
@@ -105,7 +153,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           _lowerListContainer(),
           _textContainer("Popular"),
-          _gridViewContainer(),
+          _popularGridView(),
           Container(
               margin: EdgeInsets.only(
                   left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
@@ -173,14 +221,14 @@ class _SearchPageState extends State<SearchPage> {
             height: 20.0,
           ),
           _textContainer("New Today"),
-          _gridViewContainer(),
+          // _gridViewContainer(),
           Container(
               margin: EdgeInsets.only(
                   left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
               child: RoundedButton(ScreenSize.width, 55.0, "See All New Today",
                   1.2, TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400))),
           _textContainer("Ending Soon"),
-          _gridViewContainer(),
+          _endingSoonGridView(),
           Container(
               margin: EdgeInsets.only(
                   left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
@@ -206,29 +254,160 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  _gridViewContainer() {
+  _popularGridView() {
     var ScreenSize = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 17.0),
-      height: getScreenHeight(context) == 0
-          ? ScreenSize.height * 0.6
-          : getScreenHeight(context) == 1
-              ? ScreenSize.height * 0.5
-              : ScreenSize.height * 0.5,
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        mainAxisSpacing: 15.0,
-        crossAxisCount: 2,
-        crossAxisSpacing: 20.0,
-        children: List.generate(4, (index) {
-          return _items();
-        }),
-      ),
+    return !popularHasData
+        ? Container(
+            height: getScreenHeight(context) == 0
+                ? ScreenSize.height * 0.6
+                : getScreenHeight(context) == 1
+                    ? ScreenSize.height * 0.5
+                    : ScreenSize.height * 0.5,
+            child: Center(
+              child: SpinKitFadingFour(
+                color: const Color(0xFFE6798A),
+                size: 50.0,
+              ),
+            ),
+          )
+        : Container(
+            margin: EdgeInsets.symmetric(horizontal: 17.0),
+            height: getScreenHeight(context) == 0
+                ? ScreenSize.height * 0.6
+                : getScreenHeight(context) == 1
+                    ? ScreenSize.height * 0.5
+                    : ScreenSize.height * 0.5,
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              mainAxisSpacing: 15.0,
+              crossAxisCount: 2,
+              crossAxisSpacing: 20.0,
+              children: List.generate(4, (index) {
+                return _items(Constants.popularModel.data[index]);
+              }),
+            ),
+          );
+  }
+
+  _endingSoonGridView() {
+    var ScreenSize = MediaQuery.of(context).size;
+    return !endingHasData
+        ? Container(
+            height: getScreenHeight(context) == 0
+                ? ScreenSize.height * 0.6
+                : getScreenHeight(context) == 1
+                    ? ScreenSize.height * 0.5
+                    : ScreenSize.height * 0.5,
+            child: Center(
+              child: SpinKitFadingFour(
+                color: const Color(0xFFE6798A),
+                size: 50.0,
+              ),
+            ),
+          )
+        : Container(
+            margin: EdgeInsets.symmetric(horizontal: 17.0),
+            height: getScreenHeight(context) == 0
+                ? ScreenSize.height * 0.6
+                : getScreenHeight(context) == 1
+                    ? ScreenSize.height * 0.5
+                    : ScreenSize.height * 0.5,
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              mainAxisSpacing: 15.0,
+              crossAxisCount: 2,
+              crossAxisSpacing: 20.0,
+              children: List.generate(4, (index) {
+                return _itemsEnding(Constants.endingSoonModel.data[index]);
+              }),
+            ),
+          );
+  }
+
+  // _gridViewContainer() {
+  //   var ScreenSize = MediaQuery.of(context).size;
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(horizontal: 17.0),
+  //     height: getScreenHeight(context) == 0
+  //         ? ScreenSize.height * 0.6
+  //         : getScreenHeight(context) == 1
+  //             ? ScreenSize.height * 0.5
+  //             : ScreenSize.height * 0.5,
+  //     child: GridView.count(
+  //       shrinkWrap: true,
+  //       physics: ClampingScrollPhysics(),
+  //       mainAxisSpacing: 15.0,
+  //       crossAxisCount: 2,
+  //       crossAxisSpacing: 20.0,
+  //       children: List.generate(4, (index) {
+  //         return _items();
+  //       }),
+  //     ),
+  //   );
+  // }
+  _itemsEnding(EndingSoonData data) {
+    var ScreenSize = MediaQuery.of(context).size;
+
+    MediaQueryData d = MediaQuery.of(context);
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            height: 400,
+            width: ScreenSize.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey, width: 2),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            child: Center(
+              child: Text("PICTURES"),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 6.0,
+            ),
+            Text(
+              '\$${data.salePrice}',
+              style: TextStyle(
+                  color: Color(0xFFE6798A), fontSize: ScreenSize.width * 0.04),
+            ),
+            SizedBox(
+              width: 6.0,
+            ),
+            Text(
+              '\$${data.price}',
+              style: TextStyle(
+                  decoration: TextDecoration.lineThrough,
+                  fontSize: ScreenSize.width * 0.04,
+                  color: Colors.grey),
+            ),
+            Spacer(),
+            Icon(
+              Icons.favorite_border,
+              size: ScreenSize.width * 0.05,
+              color: Colors.grey,
+            ),
+            SizedBox(width: 5.0),
+            Text('${data.favCount}',
+                style: TextStyle(
+                    fontSize: ScreenSize.width * 0.04, color: Colors.grey))
+          ],
+        ),
+      ],
     );
   }
 
-  _items() {
+  _items(Dater data) {
     var ScreenSize = MediaQuery.of(context).size;
     MediaQueryData d = MediaQuery.of(context);
     return Column(
@@ -257,7 +436,7 @@ class _SearchPageState extends State<SearchPage> {
               width: 6.0,
             ),
             Text(
-              '\$14.51',
+              '\$${data.salePrice}',
               style: TextStyle(
                   color: Color(0xFFE6798A), fontSize: ScreenSize.width * 0.04),
             ),
@@ -265,7 +444,7 @@ class _SearchPageState extends State<SearchPage> {
               width: 6.0,
             ),
             Text(
-              '\$8.23',
+              '\$${data.price}',
               style: TextStyle(
                   decoration: TextDecoration.lineThrough,
                   fontSize: ScreenSize.width * 0.04,
@@ -278,7 +457,7 @@ class _SearchPageState extends State<SearchPage> {
               color: Colors.grey,
             ),
             SizedBox(width: 5.0),
-            Text('503',
+            Text('${data.favCount}',
                 style: TextStyle(
                     fontSize: ScreenSize.width * 0.04, color: Colors.grey))
           ],
@@ -446,6 +625,7 @@ class _SearchPageState extends State<SearchPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextFormField(
+                  readOnly: true,
                   cursorColor: Colors.black,
                   decoration: new InputDecoration(
                       border: InputBorder.none,

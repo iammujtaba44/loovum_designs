@@ -1,6 +1,7 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
@@ -55,10 +56,11 @@ class _ProductsPageState extends State<ProductsPage> {
   getData() async {
     bool result = await GetMethods.productHomeInit();
     if (result) {
-      setState(() {
-        hasData = true;
-      });
-    } else
+      if (mounted)
+        setState(() {
+          hasData = true;
+        });
+    } else if (mounted)
       setState(() {
         hasData = false;
       });
@@ -73,12 +75,16 @@ class _ProductsPageState extends State<ProductsPage> {
               child: CircularProgressIndicator(),
             ),
           )
-        : ListView(
-            children: [
-              _item(),
-              _item(),
-            ],
-          );
+        : ListView.builder(
+            itemCount: Constants.mainHomeModel.count,
+            itemBuilder: (context, index) {
+              return _item(Constants.mainHomeModel.products[index]);
+            }
+            // children: [
+            //   _item(),
+            //   _item(),
+            // ],
+            );
   }
 
   _containerIner() {
@@ -150,7 +156,7 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  Padding _item() {
+  Padding _item(Product data) {
     var ScreenSize = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(top: 35, right: 18, left: 18),
@@ -174,6 +180,10 @@ class _ProductsPageState extends State<ProductsPage> {
                 color: Colors.grey,
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
+              child: Image.network(
+                'https://api.scentpeeks.com/storage/banner/1604762439_5fa6bb47c25ce.png',
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(
@@ -182,7 +192,7 @@ class _ProductsPageState extends State<ProductsPage> {
           Row(
             children: [
               Text(
-                'Flexible gym sweat pants | S - XL',
+                '${data.title} | ${data.attributes[0].sku} - ${data.attributes[data.attributes.length - 1].sku}',
                 style: TextStyle(fontSize: 15.0),
               ),
               Spacer(),
@@ -197,7 +207,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     width: 5.w,
                   ),
                   Text(
-                    '503',
+                    '${data.favCount}',
                     style: TextStyle(color: Colors.grey),
                   )
                 ],
@@ -212,7 +222,7 @@ class _ProductsPageState extends State<ProductsPage> {
             child: Row(
               children: [
                 Text(
-                  '\$14.51',
+                  '\$${data.salePrice}',
                   style: TextStyle(color: Color(0xFFE6798A), fontSize: 15.0),
                 ),
                 SizedBox(
@@ -221,7 +231,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 Row(
                   children: [
                     Text(
-                      '\$8.23',
+                      '\$${data.price}',
                       style: TextStyle(
                           decoration: TextDecoration.lineThrough,
                           fontSize: 13.0),

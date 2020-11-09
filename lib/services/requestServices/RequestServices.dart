@@ -7,6 +7,9 @@ import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/models/RegisterModel.dart';
 import 'package:loovum_designs/services/models/RequiredModel.dart';
 import 'package:loovum_designs/services/models/UserModel.dart';
+import 'package:loovum_designs/services/models/search/CollectionModel.dart';
+import 'package:loovum_designs/services/models/search/EndingSoon.dart';
+import 'package:loovum_designs/services/models/search/PopularModel.dart';
 import 'package:loovum_designs/services/models/search/search_model.dart';
 
 class RequestServices {
@@ -46,6 +49,46 @@ class RequestServices {
     }
   }
 
+  ////Popular
+  static Future<PopularModel> popular() async {
+    var response = await http.get(PopularUrl);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      //print(map);
+      return popularModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  ////Collection
+  static Future<CollectionModel> collection() async {
+    var response = await http.get(CollectionUrl);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      return collectionModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  ////Ending soon
+  static Future<EndingSoonModel> endingSoon() async {
+    var response = await http.get(endingSoon());
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      return endingSoonModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
   static Future<UserModel> user() async {
     var response = await http.post(UserUrl);
 
@@ -63,6 +106,7 @@ class RequestServices {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;
+      //  print(map);
       return mainHomeModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
@@ -87,7 +131,7 @@ class RequestServices {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;
-      print(map);
+      // print(map);
       return searchModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");

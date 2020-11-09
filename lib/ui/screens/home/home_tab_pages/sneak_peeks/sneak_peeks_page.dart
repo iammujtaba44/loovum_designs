@@ -64,10 +64,11 @@ class _SneakPeeksPageState extends State<SneakPeeksPage> {
   getData() async {
     bool result = await GetMethods.requiredDataInit();
     if (result) {
-      setState(() {
-        hasData = true;
-      });
-    } else
+      if (mounted)
+        setState(() {
+          hasData = true;
+        });
+    } else if (mounted)
       setState(() {
         hasData = false;
       });
@@ -216,7 +217,8 @@ class _SneakPeeksPageState extends State<SneakPeeksPage> {
                     width: 230.w,
                     color: Colors.grey,
                     child: Image.network(
-                      Constants.requiredModel.categories[index].banner,
+                      'https://api.scentpeeks.com/${Constants.requiredModel.categories[index].banner}',
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ],

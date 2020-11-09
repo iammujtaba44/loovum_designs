@@ -6,8 +6,52 @@ import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 
 class GetMethods {
+  //Popular Init
+  static Future<bool> popularInit() async {
+    Constants.popularModel = await RequestServices.popular();
+
+    //print(Constants.searchModel.products.length);
+    if (Constants.popularModel != null) {
+      if (Constants.popularModel.total > 0)
+        return true;
+      else
+        return false;
+    } else {
+      return false;
+    }
+  }
+
+  //Collection Init
+  static Future<bool> collectionInit() async {
+    Constants.collectionModel = await RequestServices.collection();
+
+    //print(Constants.searchModel.products.length);
+    if (Constants.collectionModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  //Ending Init
+  static Future<bool> endingSoonInit() async {
+    Constants.endingSoonModel = await RequestServices.endingSoon();
+
+    //print(Constants.searchModel.products.length);
+    if (Constants.endingSoonModel != null) {
+      if (Constants.endingSoonModel.total > 0)
+        return true;
+      else
+        return false;
+    } else {
+      return false;
+    }
+  }
+
   static Future<bool> searchDataInit(String search) async {
     Constants.searchModel = await RequestServices.searchData(search);
+
+    //print(Constants.searchModel.products.length);
     if (Constants.searchModel != null) {
       return true;
     } else {
@@ -26,7 +70,7 @@ class GetMethods {
   static Future<bool> productHomeInit() async {
     Constants.mainHomeModel = await RequestServices.productHome();
     if (Constants.mainHomeModel != null) {
-      if (Constants.mainHomeModel.count == 0)
+      if (Constants.mainHomeModel.count != 0)
         return true;
       else
         return false;

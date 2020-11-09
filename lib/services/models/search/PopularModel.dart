@@ -1,37 +1,72 @@
-// To parse this JSON data, do
-//
-//     final mainHomeModel = mainHomeModelFromJson(jsonString);
-
 import 'dart:convert';
 
-MainHomeModel mainHomeModelFromJson(String str) =>
-    MainHomeModel.fromJson(json.decode(str));
+PopularModel popularModelFromJson(String str) =>
+    PopularModel.fromJson(json.decode(str));
 
-String mainHomeModelToJson(MainHomeModel data) => json.encode(data.toJson());
+String popularModelToJson(PopularModel data) => json.encode(data.toJson());
 
-class MainHomeModel {
-  MainHomeModel({
-    this.products,
-    this.count,
+class PopularModel {
+  PopularModel({
+    this.currentPage,
+    this.data,
+    this.firstPageUrl,
+    this.from,
+    this.lastPage,
+    this.lastPageUrl,
+    this.nextPageUrl,
+    this.path,
+    this.perPage,
+    this.prevPageUrl,
+    this.to,
+    this.total,
   });
 
-  List<Product> products;
-  int count;
+  int currentPage;
+  List<Dater> data;
+  String firstPageUrl;
+  int from;
+  int lastPage;
+  String lastPageUrl;
+  dynamic nextPageUrl;
+  String path;
+  int perPage;
+  dynamic prevPageUrl;
+  int to;
+  int total;
 
-  factory MainHomeModel.fromJson(Map<String, dynamic> json) => MainHomeModel(
-        products: List<Product>.from(
-            json["products"].map((x) => Product.fromJson(x))),
-        count: json["count"],
+  factory PopularModel.fromJson(Map<String, dynamic> json) => PopularModel(
+        currentPage: json["current_page"],
+        data: List<Dater>.from(json["data"].map((x) => Dater.fromJson(x))),
+        firstPageUrl: json["first_page_url"],
+        from: json["from"],
+        lastPage: json["last_page"],
+        lastPageUrl: json["last_page_url"],
+        nextPageUrl: json["next_page_url"],
+        path: json["path"],
+        perPage: json["per_page"],
+        prevPageUrl: json["prev_page_url"],
+        to: json["to"],
+        total: json["total"],
       );
 
   Map<String, dynamic> toJson() => {
-        "products": List<dynamic>.from(products.map((x) => x.toJson())),
-        "count": count,
+        "current_page": currentPage,
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "first_page_url": firstPageUrl,
+        "from": from,
+        "last_page": lastPage,
+        "last_page_url": lastPageUrl,
+        "next_page_url": nextPageUrl,
+        "path": path,
+        "per_page": perPage,
+        "prev_page_url": prevPageUrl,
+        "to": to,
+        "total": total,
       };
 }
 
-class Product {
-  Product({
+class Dater {
+  Dater({
     this.id,
     this.categoryId,
     this.subcategoryId,
@@ -89,8 +124,8 @@ class Product {
   String slug;
   String fitDetails;
   String description;
-  String infoAndCare;
-  String shippingAndReturns;
+  dynamic infoAndCare;
+  dynamic shippingAndReturns;
   String sku;
   int favCount;
   int favNumber;
@@ -120,12 +155,12 @@ class Product {
   int starTwo;
   int starOne;
   dynamic deletedAt;
-  dynamic createdAt;
-  dynamic updatedAt;
+  DateTime createdAt;
+  DateTime updatedAt;
   List<Attribute> attributes;
-  List<dynamic> favourite;
+  List<Favourite> favourite;
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
+  factory Dater.fromJson(Map<String, dynamic> json) => Dater(
         id: json["id"],
         categoryId: json["category_id"],
         subcategoryId: json["subcategory_id"],
@@ -153,13 +188,12 @@ class Product {
         color: json["color"],
         size: json["size"],
         style: json["style"],
-        sortOrder: json["sort_order"],
+        sortOrder: json["sort_order"] == null ? null : json["sort_order"],
         startTime: DateTime.parse(json["start_time"]),
         endTime: DateTime.parse(json["end_time"]),
-        seoTitle: json["seo_title"] == null ? null : json["seo_title"],
-        seoKeyword: json["seo_keyword"] == null ? null : json["seo_keyword"],
-        seoDescription:
-            json["seo_description"] == null ? null : json["seo_description"],
+        seoTitle: json["seo_title"],
+        seoKeyword: json["seo_keyword"],
+        seoDescription: json["seo_description"],
         ratingCount: json["rating_count"],
         starCount: json["star_count"],
         starFive: json["star_five"],
@@ -167,12 +201,13 @@ class Product {
         starThree: json["star_three"],
         starTwo: json["star_two"],
         starOne: json["star_one"],
-        deletedAt: json["deleted_at"] == null ? null : json["deleted_at"],
-        createdAt: json["created_at"] == null ? null : json["created_at"],
-        updatedAt: json["updated_at"] == null ? null : json["updated_at"],
+        deletedAt: json["deleted_at"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
         attributes: List<Attribute>.from(
             json["attributes"].map((x) => Attribute.fromJson(x))),
-        favourite: List<dynamic>.from(json["favourite"].map((x) => x)),
+        favourite: List<Favourite>.from(
+            json["favourite"].map((x) => Favourite.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -203,12 +238,12 @@ class Product {
         "color": color,
         "size": size,
         "style": style,
-        "sort_order": sortOrder,
+        "sort_order": sortOrder == null ? null : sortOrder,
         "start_time": startTime.toIso8601String(),
         "end_time": endTime.toIso8601String(),
-        "seo_title": seoTitle == null ? null : seoTitle,
-        "seo_keyword": seoKeyword == null ? null : seoKeyword,
-        "seo_description": seoDescription == null ? null : seoDescription,
+        "seo_title": seoTitle,
+        "seo_keyword": seoKeyword,
+        "seo_description": seoDescription,
         "rating_count": ratingCount,
         "star_count": starCount,
         "star_five": starFive,
@@ -216,11 +251,11 @@ class Product {
         "star_three": starThree,
         "star_two": starTwo,
         "star_one": starOne,
-        "deleted_at": deletedAt.toIso8601String(),
+        "deleted_at": deletedAt,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
         "attributes": List<dynamic>.from(attributes.map((x) => x.toJson())),
-        "favourite": List<dynamic>.from(favourite.map((x) => x)),
+        "favourite": List<dynamic>.from(favourite.map((x) => x.toJson())),
       };
 }
 
@@ -243,10 +278,10 @@ class Attribute {
   int productId;
   String sku;
   String value;
-  String type;
+  Type type;
   String price;
   int stock;
-  dynamic colorImage;
+  String colorImage;
   int sortOrder;
   DateTime createdAt;
   DateTime updatedAt;
@@ -256,10 +291,10 @@ class Attribute {
         productId: json["product_id"],
         sku: json["sku"],
         value: json["value"],
-        type: json["type"],
+        type: typeValues.map[json["type"]],
         price: json["price"],
         stock: json["stock"],
-        colorImage: json["color_image"],
+        colorImage: json["color_image"] == null ? null : json["color_image"],
         sortOrder: json["sort_order"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
@@ -270,12 +305,62 @@ class Attribute {
         "product_id": productId,
         "sku": sku,
         "value": value,
-        "type": type,
+        "type": typeValues.reverse[type],
         "price": price,
         "stock": stock,
-        "color_image": colorImage,
+        "color_image": colorImage == null ? null : colorImage,
         "sort_order": sortOrder,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
       };
+}
+
+enum Type { SIZE, COLOR }
+
+final typeValues = EnumValues({"color": Type.COLOR, "size": Type.SIZE});
+
+class Favourite {
+  Favourite({
+    this.id,
+    this.productId,
+    this.userId,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  int id;
+  int productId;
+  int userId;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  factory Favourite.fromJson(Map<String, dynamic> json) => Favourite(
+        id: json["id"],
+        productId: json["product_id"],
+        userId: json["user_id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "product_id": productId,
+        "user_id": userId,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
+  }
 }

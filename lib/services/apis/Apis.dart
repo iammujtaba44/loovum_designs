@@ -6,3 +6,6 @@ const String LoginUrl = BaseUrl + "auth/login";
 const String ProductHomeUrl = BaseUrl + "home/20/0";
 const String RequiredUrl = BaseUrl + "required";
 const String SearchUrl = BaseUrl + "results/";
+const String PopularUrl = BaseUrl + "popular";
+const String CollectionUrl = BaseUrl + "collections/";
+const String EndingSoonUrl = BaseUrl + "ending-soon/";

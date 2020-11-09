@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-List<CollectionModel> collectionModelFromJson(String str) =>
-    List<CollectionModel>.from(
-        json.decode(str).map((x) => CollectionModel.fromJson(x)));
+CollectionModel collectionModelFromJson(String str) =>
+    CollectionModel.fromJson(json.decode(str));
 
-String collectionModelToJson(List<CollectionModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String collectionModelToJson(CollectionModel data) =>
+    json.encode(data.toJson());
 
 class CollectionModel {
   CollectionModel({
