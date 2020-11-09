@@ -1,6 +1,7 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/ui/screens/search/collections_page.dart';
 import 'package:loovum_designs/ui/shared/roundedButton.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
@@ -54,6 +55,28 @@ class _SearchPageState extends State<SearchPage> {
     'Accessories',
     'Jewellery'
   ];
+
+  bool hasData = false;
+
+  getSearchResult() async {
+    bool result = await GetMethods.searchDataInit('a');
+    if (result) {
+      setState(() {
+        hasData = true;
+      });
+    } else {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getSearchResult();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:loovum_designs/services/models/LoginModel.dart';
+import 'package:loovum_designs/services/models/search/search_model.dart';
 import 'package:loovum_designs/services/requestServices/RequestServices.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 
 class GetMethods {
+  static Future<bool> searchDataInit(String search) async {
+    Constants.searchModel = await RequestServices.searchData(search);
+    if (Constants.searchModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static Future<bool> requiredDataInit() async {
     Constants.requiredModel = await RequestServices.requiredData();
     if (Constants.requiredModel != null) {

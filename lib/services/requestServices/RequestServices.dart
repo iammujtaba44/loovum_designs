@@ -7,6 +7,7 @@ import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/models/RegisterModel.dart';
 import 'package:loovum_designs/services/models/RequiredModel.dart';
 import 'package:loovum_designs/services/models/UserModel.dart';
+import 'package:loovum_designs/services/models/search/search_model.dart';
 
 class RequestServices {
   static Future<RegisterModel> signup(
@@ -75,6 +76,19 @@ class RequestServices {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;
       return requiredModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  static Future<SearchModel> searchData(String search) async {
+    var response = await http.get(SearchUrl + search);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      print(map);
+      return searchModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
       return null;
