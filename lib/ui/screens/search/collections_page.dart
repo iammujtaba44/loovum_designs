@@ -49,48 +49,50 @@ class _CollectionPageState extends State<CollectionPage> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     return SafeArea(
-      child: Container(
-        color: Colors.white,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20.0,
-            ),
-            Row(
-              children: [
-                Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: Icon(Icons.arrow_back_ios))
-              ],
-            ),
-            Text(
-              'Collections',
-              style: TextStyle(
-                fontSize: 22,
+      child: Scaffold(
+        body: Container(
+          color: Colors.white,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20.0,
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: 500.w,
-              child: Text(
-                'Great finds, great style, handpicked from all around the world.',
-                textAlign: TextAlign.center,
+              Row(
+                children: [
+                  Padding(
+                      padding: EdgeInsets.only(left: 10.0),
+                      child: Icon(Icons.arrow_back_ios))
+                ],
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: ListView.builder(
-                  padding: EdgeInsets.all(0),
-                  itemCount: 2,
-                  itemBuilder: (context, index) {
-                    return _collectionDetailItem(title: _list[index]);
-                  }),
-            ),
-          ],
+              Text(
+                'Collections',
+                style: TextStyle(
+                  fontSize: 22,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: 500.w,
+                child: Text(
+                  'Great finds, great style, handpicked from all around the world.',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                child: ListView.builder(
+                    padding: EdgeInsets.all(0),
+                    itemCount: 2,
+                    itemBuilder: (context, index) {
+                      return _collectionDetailItem(title: _list[index]);
+                    }),
+              ),
+            ],
+          ),
         ),
       ),
     );

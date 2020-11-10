@@ -64,7 +64,7 @@ class RequestServices {
   }
 
   ////Collection
-  static Future<CollectionModel> collection() async {
+  static Future<List<CollectionModel>> collection() async {
     var response = await http.get(CollectionUrl);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -78,7 +78,7 @@ class RequestServices {
 
   ////Ending soon
   static Future<EndingSoonModel> endingSoon() async {
-    var response = await http.get(endingSoon());
+    var response = await http.get(EndingSoonUrl);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;

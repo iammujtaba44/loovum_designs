@@ -1,6 +1,7 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/RequestServices.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
@@ -81,7 +82,10 @@ class _SneakPeeksPageState extends State<SneakPeeksPage> {
     return !hasData
         ? Container(
             child: Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingFour(
+                color: const Color(0xFFE6798A),
+                size: 50.0,
+              ),
             ),
           )
         : SafeArea(

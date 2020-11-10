@@ -15,5 +15,5 @@ class Constants {
   static SearchModel searchModel;
   static EndingSoonModel endingSoonModel;
   static PopularModel popularModel;
-  static CollectionModel collectionModel;
+  static List<CollectionModel> collectionModel;
 }

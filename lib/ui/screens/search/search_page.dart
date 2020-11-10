@@ -1,17 +1,21 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loovum_designs/services/models/search/CollectionModel.dart';
 import 'package:loovum_designs/services/models/search/EndingSoon.dart';
 
 import 'package:loovum_designs/services/models/search/PopularModel.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/search/collections_page.dart';
+import 'package:loovum_designs/ui/screens/search/sneakPeeks2.dart';
 import 'package:loovum_designs/ui/shared/roundedButton.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:preview/preview.dart';
 
 void main() {
@@ -82,48 +86,12 @@ class _SearchPageState extends State<SearchPage> {
     print(Constants.searchModel.products[0]);
   }
 
-  Future getPopularData() async {
-    print('OKKa');
-    bool result = await GetMethods.popularInit();
-    if (result) {
-      if (mounted)
-        setState(() {
-          popularHasData = true;
-        });
-    } else {
-      if (mounted)
-        setState(() {
-          popularHasData = false;
-        });
-    }
-    // print(Constants.popularModel.data[0]);
-  }
-
-  getEndingData() async {
-    print('OKKa2');
-    bool result = await GetMethods.endingSoonInit();
-    if (result) {
-      if (mounted)
-        setState(() {
-          endingHasData = true;
-        });
-    } else {
-      if (mounted)
-        setState(() {
-          endingHasData = false;
-        });
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    //  getSearchResult();
     getPopularData();
-
-    // print(Constants.searchModel);
   }
 
   @override
@@ -158,7 +126,16 @@ class _SearchPageState extends State<SearchPage> {
               margin: EdgeInsets.only(
                   left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
               child: RoundedButton(ScreenSize.width, 55.0, "See All Popular",
-                  1.2, TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400))),
+                  1.2, TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
+                  ontap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SneakPeak2(
+                              title: 'Popular',
+                              type: true,
+                            )));
+              })),
           Container(
             margin: EdgeInsets.only(
                 left: 18.0, right: 18.0, bottom: 25.0, top: 20.0),
@@ -176,47 +153,71 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
           ),
-          Container(
-            //  margin: EdgeInsets.only(left: 17.0),
-            color: Colors.white,
-            height: ScreenSize.height > 650 && ScreenSize.height < 750
-                ? 350.h
-                : 300.h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.only(
-                    left: 16.0,
+
+          !collectionHasData
+              ? Container(
+                  height: ScreenSize.height > 650 && ScreenSize.height < 750
+                      ? 350.h
+                      : 300.h,
+                  child: Center(
+                    child: SpinKitFadingFour(
+                      color: const Color(0xFFE6798A),
+                      size: 50.0,
+                    ),
                   ),
-                  height: 100.h,
-                  width: 470.w,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                )
+              : Container(
+                  //  margin: EdgeInsets.only(left: 17.0),
+                  color: Colors.transparent,
+                  height: ScreenSize.height > 650 && ScreenSize.height < 750
+                      ? 350.h
+                      : 300.h,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: Constants.collectionModel.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.only(
+                          left: 16.0,
+                        ),
+                        // height: 100.h,
+                        // width: 470.w,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              // margin: EdgeInsets.only(
+                              //   left: 16.0,
+                              // ),
+                              height: 260.h,
+                              width: 470.w,
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                top: 6.0,
+                                left: 3.0,
+                              ),
+                              child: Text(
+                                '${Constants.collectionModel[index].name}',
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-              top: 6.0,
-              left: 17.0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Shop Home Hub',
                 ),
-                Text(
-                  'Shop Accessories',
-                ),
-              ],
-            ),
-          ),
+
           SizedBox(
             height: 20.0,
           ),
@@ -237,7 +238,16 @@ class _SearchPageState extends State<SearchPage> {
                   55.0,
                   "See All Ending Soon",
                   1.2,
-                  TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400))),
+                  TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
+                  ontap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SneakPeak2(
+                              title: 'Ending soon',
+                              type: false,
+                            )));
+              })),
         ]),
       ),
     );
@@ -326,27 +336,6 @@ class _SearchPageState extends State<SearchPage> {
           );
   }
 
-  // _gridViewContainer() {
-  //   var ScreenSize = MediaQuery.of(context).size;
-  //   return Container(
-  //     margin: EdgeInsets.symmetric(horizontal: 17.0),
-  //     height: getScreenHeight(context) == 0
-  //         ? ScreenSize.height * 0.6
-  //         : getScreenHeight(context) == 1
-  //             ? ScreenSize.height * 0.5
-  //             : ScreenSize.height * 0.5,
-  //     child: GridView.count(
-  //       shrinkWrap: true,
-  //       physics: ClampingScrollPhysics(),
-  //       mainAxisSpacing: 15.0,
-  //       crossAxisCount: 2,
-  //       crossAxisSpacing: 20.0,
-  //       children: List.generate(4, (index) {
-  //         return _items();
-  //       }),
-  //     ),
-  //   );
-  // }
   _itemsEnding(EndingSoonData data) {
     var ScreenSize = MediaQuery.of(context).size;
 
@@ -603,6 +592,59 @@ class _SearchPageState extends State<SearchPage> {
         Text(title),
       ],
     );
+  }
+
+  getPopularData() async {
+    print('OKKa');
+    bool result = await GetMethods.popularInit();
+    if (result) {
+      if (mounted)
+        setState(() {
+          popularHasData = true;
+        });
+    } else {
+      if (mounted)
+        setState(() {
+          popularHasData = false;
+        });
+    }
+    // print(Constants.popularModel.data[0]);
+    getCollectionData();
+  }
+
+  getEndingData() async {
+    print('OKKa2');
+    bool result = await GetMethods.endingSoonInit();
+    if (result) {
+      if (mounted)
+        setState(() {
+          endingHasData = true;
+        });
+    } else {
+      if (mounted)
+        setState(() {
+          endingHasData = false;
+        });
+    }
+  }
+
+  getCollectionData() async {
+    print('OKKa2');
+    bool result = await GetMethods.collectionInit();
+    if (result) {
+      if (mounted)
+        setState(() {
+          collectionHasData = true;
+        });
+    } else {
+      if (mounted)
+        setState(() {
+          collectionHasData = false;
+        });
+    }
+
+    getEndingData();
+    //   print(Constants.collectionModel[0].name);
   }
 
   appBar(

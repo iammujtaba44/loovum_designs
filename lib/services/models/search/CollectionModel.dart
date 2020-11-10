@@ -1,10 +1,15 @@
+// To parse this JSON data, do
+//
+//     final collectionModel = collectionModelFromJson(jsonString);
+
 import 'dart:convert';
 
-CollectionModel collectionModelFromJson(String str) =>
-    CollectionModel.fromJson(json.decode(str));
+List<CollectionModel> collectionModelFromJson(String str) =>
+    List<CollectionModel>.from(
+        json.decode(str).map((x) => CollectionModel.fromJson(x)));
 
-String collectionModelToJson(CollectionModel data) =>
-    json.encode(data.toJson());
+String collectionModelToJson(List<CollectionModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class CollectionModel {
   CollectionModel({
