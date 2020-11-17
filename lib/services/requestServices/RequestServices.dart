@@ -57,9 +57,9 @@ class RequestServices {
   // but for now it's implemented without slug
   // right now it's hard-coded.
 
-  static Future<ProductSlugModel> productSlug() async {
-    var response = await http.get(ProductSlugUrl + "mesh-v-neck-tee",
-        headers: {'Authorization': 'Bearer ${Constants.bearerToken}'});
+  static Future<ProductSlugModel> productSlug({String slug}) async {
+    var response = await http.get(ProductSlugUrl + slug, //"mesh-v-neck-tee",
+        headers: {'Authorization': 'Bearer ${Constants.loginModel.token}'});
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;

@@ -1,6 +1,10 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
+import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/sneak_peeks/sneak_peeks_dialog.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
@@ -8,44 +12,11 @@ import 'package:loovum_designs/ui/shared/widgets/single_line_detail.dart';
 import 'package:loovum_designs/ui/shared/widgets/slide_to_act.dart';
 import 'package:loovum_designs/ui/shared/widgets/top_summary.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(
-          body: ListView(
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.all(0),
-              children: [LiveProductPage()])),
-    );
-  }
-}
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LiveProductPage extends StatefulWidget {
+  final String slug;
+  LiveProductPage({@required this.slug});
   @override
   _LiveProductPageState createState() => _LiveProductPageState();
 }
@@ -54,350 +25,406 @@ class _LiveProductPageState extends State<LiveProductPage> {
   var rating = 3.0;
   bool isClick = false;
   bool xxl = false, xl = false, m = false, l = false;
+  bool hasData = false;
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    bool result = await GetMethods.productSlugInit(slug: widget.slug);
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
-    return Column(
-      children: [
-        appBar(height: 120.h, width: 750.w, title: 'Flexible Gym Pants'),
-        Stack(
-          children: [
-            Container(
-              color: Colors.grey,
-              height: 700.h,
-            ),
-            Positioned(
-              bottom: 10,
-              right: 10,
-              child: Container(
-                alignment: Alignment.center,
-                width: 55,
-                height: 25,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Text('1 of 15'),
+    var ScreenSize = MediaQuery.of(context).size;
+    return !hasData
+        ? Container(
+            child: Center(
+              child: SpinKitFadingFour(
+                color: const Color(0xFFE6798A),
+                size: 50.0,
               ),
             ),
-          ],
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _littleSamplePhoto(),
-              _littleSamplePhoto(),
-              _littleSamplePhoto(),
-              _littleSamplePhoto(),
-              _littleSamplePhoto(),
-            ],
-          ),
-        ),
-        _itemInfo(),
-        SizedBox(
-          height: 40.h,
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            bottom: 16.0,
-          ),
-          child: pinkButton(
-              height: 60.h,
-              width: double.infinity,
-              isRounded: true,
-              title: 'Add to Bag',
-              func: () {
-                _settingModalBottomSheet(context);
-              }),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-          child: Row(
-            children: [
-              Text('Size'),
-              Spacer(),
-              SizedBox(
-                width: 10.w,
-              ),
-              _itemSize(
-                'XL',
-                xl,
-                func: () {
-                  setState(() {
-                    xl = !xl;
-                  });
-                },
-              ),
-              SizedBox(
-                width: 10.w,
-              ),
-              _itemSize(
-                'M',
-                m,
-                func: () {
-                  setState(() {
-                    m = !m;
-                  });
-                },
-              ),
-              SizedBox(
-                width: 10.w,
-              ),
-              _itemSize(
-                'L',
-                l,
-                func: () {
-                  setState(() {
-                    l = !l;
-                  });
-                },
-              )
-            ],
-          ),
-        ),
-        Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 16),
-            child: Row(
+          )
+        : SafeArea(
+            child: Column(
               children: [
-                Text('Colors'),
-                Spacer(),
-                _selectColors(
-                  false,
-                  func: () {},
-                  color: Colors.grey,
+                appBarWithIcon(
+                    height: 120.h,
+                    width: ScreenSize.width,
+                    title: Constants.productSlugModel.product.title,
+                    iconbtn: IconButton(
+                        icon: Icon(Icons.keyboard_arrow_left_sharp,
+                            color: Colors.black),
+                        onPressed: null),
+                    trailingIcon: IconButton(
+                        icon: Icon(
+                          Icons.shopping_bag_outlined,
+                          color: Colors.black,
+                        ),
+                        onPressed: null)),
+                Stack(
+                  children: [
+                    Container(
+                      color: Colors.grey,
+                      height: 700.h,
+                    ),
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 55,
+                        height: 25,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        child: Text('1 of 15'),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(
-                  width: 10.w,
+                  height: 20,
                 ),
-                _selectColors(false, func: () {}, color: Colors.black),
-                SizedBox(
-                  width: 10.w,
-                ),
-                _selectColors(false, func: () {}, color: Color(0xFFB74FAF))
-              ],
-            )),
-        Padding(
-          padding: const EdgeInsets.only(
-              left: 8.0, right: 15.0, top: 8.0, bottom: 8.0),
-          child: SizedBox(
-            width: double.infinity,
-            child: FlatButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0.0),
-                  side: BorderSide(color: Colors.grey)),
-              child: Text(
-                'LIVE',
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-              onPressed: () {},
-            ),
-          ),
-        ),
-        Container(width: double.infinity, height: .3, color: Colors.grey),
-        SizedBox(
-          height: 10.h,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            topShortSummary(number: '46%', title: 'SAVED'),
-            topShortSummary(number: '00:00:00', title: 'TIME\'SUP'),
-            topShortSummary(number: '2', title: 'SOLD'),
-          ],
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
-        Container(width: double.infinity, height: .3, color: Colors.grey),
-        SizedBox(
-          height: 10.h,
-        ),
-        Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Text('Sold By'),
-            )),
-        ListTile(
-          contentPadding: EdgeInsets.all(0),
-          leading: CircleAvatar(
-            radius: 40,
-            backgroundColor: Color(0xFF8589F7),
-          ),
-          title: Text('Little Price Culture'),
-          subtitle: Row(
-            children: [
-              Center(
-                  child: SmoothStarRating(
-                rating: rating,
-                isReadOnly: false,
-                size: 20,
-                color: Colors.yellow,
-                borderColor: Colors.yellow,
-                filledIconData: Icons.star,
-                halfFilledIconData: Icons.star_half,
-                defaultIconData: Icons.star_border,
-                starCount: 5,
-                allowHalfRating: true,
-                spacing: 2.0,
-                onRated: (value) {
-                  print("rating value -> $value");
-                  // print("rating value dd -> ${value.truncate()}");
-                },
-              )),
-              Text('(120)'),
-            ],
-          ),
-          trailing: Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.arrow_forward_ios),
-          ),
-        ),
-        Container(width: double.infinity, height: .3, color: Colors.grey),
-        SizedBox(
-          height: 10.h,
-        ),
-        Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Text('Fit Details'),
-            )),
-        SizedBox(
-          height: 20.h,
-        ),
-        _bulletPoints('100% Cotton'),
-        _bulletPoints('Total Body Length: Approx 25\"'),
-        SizedBox(
-          height: 15,
-        ),
-        _expandedTitle('Product Description'),
-        _expandedTitle('Shipping'),
-        _expandedTitle('Fine Print'),
-        ExpansionTile(
-          tilePadding: EdgeInsets.only(right: 15, left: 15),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Product Reviews'),
-              Row(
-                children: [
-                  Center(
-                      child: SmoothStarRating(
-                    rating: rating,
-                    isReadOnly: false,
-                    size: 20,
-                    color: Colors.yellow,
-                    borderColor: Colors.yellow,
-                    filledIconData: Icons.star,
-                    halfFilledIconData: Icons.star_half,
-                    defaultIconData: Icons.star_border,
-                    starCount: 5,
-                    allowHalfRating: true,
-                    spacing: 2.0,
-                    onRated: (value) {
-                      print("rating value -> $value");
-                      // print("rating value dd -> ${value.truncate()}");
-                    },
-                  )),
-                  Text(
-                    '4.9',
-                    style: TextStyle(fontWeight: FontWeight.w800),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _littleSamplePhoto(),
+                      _littleSamplePhoto(),
+                      _littleSamplePhoto(),
+                      _littleSamplePhoto(),
+                      _littleSamplePhoto(),
+                    ],
                   ),
-                  Text('(120)'),
-                ],
-              ),
-            ],
-          ),
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 15.0, left: 15.0),
-              child: Text(
-                  'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
-            ),
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 20, left: 20),
-          child: Row(
-            children: [
-              Text(
-                'Customers Also Liked',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 0.93, mainAxisSpacing: 5),
-          itemCount: 4,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                _item(),
-              ],
-            );
-          },
-        ),
-        // ListView(
-        //   shrinkWrap: true,
+                ),
+                _itemInfo(),
+                SizedBox(
+                  height: 40.h,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 16.0,
+                  ),
+                  child: pinkButton(
+                      height: 60.h,
+                      width: double.infinity,
+                      isRounded: true,
+                      title: 'Add to Bag',
+                      func: () {
+                        _settingModalBottomSheet(context);
+                      }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Row(
+                    children: [
+                      Text('Size'),
+                      Spacer(),
+                      Row(
+                          children: List.generate(4, (index) {
+                        return Row(
+                          children: [
+                            SizedBox(
+                              width: 10,
+                            ),
+                            _itemSize(
+                              '${Constants.productSlugModel.product.attributes[index].sku}',
+                              xxl,
+                              func: () {
+                                setState(() {
+                                  xxl = !xxl;
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      }))
+                    ],
+                  ),
 
-        //           children: [ Column(
-        //     children: [
-        //       SizedBox(
-        //         width: 15,
-        //       ),
-        //       Container(
-        //         height: 200.h,
-        //         width: 300.w,
-        //         decoration: BoxDecoration(
-        //           color: Colors.grey,
-        //           borderRadius: BorderRadius.all(Radius.circular(10)),
-        //         ),
-        //       ),
-        //       SizedBox(
-        //         width: 15,
-        //       ),
-        //       Container(
-        //         height: 200.h,
-        //         width: 300.w,
-        //         decoration: BoxDecoration(
-        //           color: Colors.grey,
-        //           borderRadius: BorderRadius.all(Radius.circular(10)),
-        //         ),
-        //       ),
-        //        SizedBox(
-        //         width: 15,
-        //       ),
-        //       Container(
-        //         height: 200.h,
-        //         width: 300.w,
-        //         decoration: BoxDecoration(
-        //           color: Colors.grey,
-        //           borderRadius: BorderRadius.all(Radius.circular(10)),
-        //         ),
-        //       ),
-        //     ],
-        //   ),]
-        // ),
-      ],
-    );
+                  // child: Row(
+                  //   children: [
+                  //     Text('Size'),
+                  //     Spacer(),
+                  //     SizedBox(
+                  //       width: 10.w,
+                  //     ),
+                  //     _itemSize(
+                  //       'XL',
+                  //       xl,
+                  //       func: () {
+                  //         setState(() {
+                  //           xl = !xl;
+                  //         });
+                  //       },
+                  //     ),
+                  //     SizedBox(
+                  //       width: 10.w,
+                  //     ),
+                  //     _itemSize(
+                  //       'M',
+                  //       m,
+                  //       func: () {
+                  //         setState(() {
+                  //           m = !m;
+                  //         });
+                  //       },
+                  //     ),
+                  //     SizedBox(
+                  //       width: 10.w,
+                  //     ),
+                  //     _itemSize(
+                  //       'L',
+                  //       l,
+                  //       func: () {
+                  //         setState(() {
+                  //           l = !l;
+                  //         });
+                  //       },
+                  //     )
+                  //   ],
+                  // ),
+                ),
+                Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8.0, right: 8.0, top: 16),
+                    child: Row(
+                      children: [
+                        Text('Colors'),
+                        Spacer(),
+                        _selectColors(
+                          false,
+                          func: () {},
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          width: 10.w,
+                        ),
+                        _selectColors(false, func: () {}, color: Colors.black),
+                        SizedBox(
+                          width: 10.w,
+                        ),
+                        _selectColors(false,
+                            func: () {}, color: Color(0xFFB74FAF))
+                      ],
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 8.0, right: 15.0, top: 8.0, bottom: 8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FlatButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0.0),
+                          side: BorderSide(color: Colors.grey)),
+                      child: Text(
+                        'LIVE',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+                Container(
+                    width: double.infinity, height: .3, color: Colors.grey),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    topShortSummary(number: '46%', title: 'SAVED'),
+                    topShortSummary(number: '00:00:00', title: 'TIME\'SUP'),
+                    topShortSummary(
+                        number:
+                            '${Constants.productSlugModel.product.soldCount}',
+                        title: 'SOLD'),
+                  ],
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Container(
+                    width: double.infinity, height: .3, color: Colors.grey),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text('Sold By'),
+                    )),
+                ListTile(
+                  contentPadding: EdgeInsets.all(0),
+                  leading: CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Color(0xFF8589F7),
+                  ),
+                  title:
+                      Text('${Constants.productSlugModel.product.seller.name}'),
+                  subtitle: Row(
+                    children: [
+                      Center(
+                          child: SmoothStarRating(
+                        rating: Constants
+                                .productSlugModel.product.seller.starCount /
+                            Constants
+                                .productSlugModel.product.seller.ratingCount,
+                        isReadOnly: true,
+                        size: 20,
+                        color: Colors.yellow,
+                        borderColor: Colors.yellow,
+                        filledIconData: Icons.star,
+                        halfFilledIconData: Icons.star_half,
+                        defaultIconData: Icons.star_border,
+                        starCount: 5,
+                        allowHalfRating: true,
+                        spacing: 2.0,
+                        // onRated: (value) {
+                        //   print("rating value -> $value");
+                        //   // print("rating value dd -> ${value.truncate()}");
+                        // },
+                      )),
+                      Text(
+                          '(${Constants.productSlugModel.product.seller.starCount})'),
+                    ],
+                  ),
+                  trailing: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Icon(Icons.arrow_forward_ios),
+                  ),
+                ),
+                Container(
+                    width: double.infinity, height: .3, color: Colors.grey),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text('Fit Details'),
+                    )),
+                SizedBox(
+                  height: 10,
+                ),
+                _bulletPoints(Constants.productSlugModel.product.fitDetails),
+                SizedBox(
+                  height: 10,
+                ),
+                _expandedTitle(
+                  'Product Description',
+                  text: Constants.productSlugModel.product.description,
+                ),
+                _expandedTitle('Shipping'),
+                _expandedTitle('Fine Print'),
+                ExpansionTile(
+                  tilePadding: EdgeInsets.only(right: 15, left: 15),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Product Reviews'),
+                      Row(
+                        children: [
+                          Center(
+                              child: SmoothStarRating(
+                            rating: rating,
+                            isReadOnly: false,
+                            size: 20,
+                            color: Colors.yellow,
+                            borderColor: Colors.yellow,
+                            filledIconData: Icons.star,
+                            halfFilledIconData: Icons.star_half,
+                            defaultIconData: Icons.star_border,
+                            starCount: 5,
+                            allowHalfRating: true,
+                            spacing: 2.0,
+                            onRated: (value) {
+                              print("rating value -> $value");
+                              // print("rating value dd -> ${value.truncate()}");
+                            },
+                          )),
+                          Text(
+                            '4.9',
+                            style: TextStyle(fontWeight: FontWeight.w800),
+                          ),
+                          Text('(120)'),
+                        ],
+                      ),
+                    ],
+                  ),
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15.0, left: 15.0),
+                      child: Text(
+                          'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20, left: 20),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Customers Also Liked',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.93,
+                      mainAxisSpacing: 0),
+                  itemCount: Constants.productSlugModel.similarProducts.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        _item2(
+                            Constants.productSlugModel.similarProducts[index]),
+                      ],
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 15.0,
+                )
+              ],
+            ),
+          );
   }
 
-  Padding _item() {
+  Padding _item2(Map data) {
+    //print(data);
     return Padding(
         padding: EdgeInsets.only(
           top: 20,
@@ -405,11 +432,42 @@ class _LiveProductPageState extends State<LiveProductPage> {
           left: 15.w,
         ),
         child: Column(children: [
-          Container(
-            height: 250.h,
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+          InkWell(
+            onTap: () {
+              if (data['activate'] == 1) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                                body: ListView(
+                                    physics: BouncingScrollPhysics(),
+                                    padding: EdgeInsets.all(0),
+                                    children: [
+                                  LiveProductPage(
+                                    slug: data['slug'],
+                                  )
+                                ]))));
+              } else {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                                body: ListView(
+                                    physics: BouncingScrollPhysics(),
+                                    padding: EdgeInsets.all(0),
+                                    children: [
+                                  ExpiredProductPage(
+                                    slug: data['slug'],
+                                  )
+                                ]))));
+              }
+            },
+            child: Container(
+              height: 250.h,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
             ),
           ),
           SizedBox(
@@ -421,14 +479,14 @@ class _LiveProductPageState extends State<LiveProductPage> {
               Row(
                 children: [
                   Text(
-                    '\$14.51',
+                    '\$${data['sale_price']}',
                     style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
                   ),
                   SizedBox(
                     width: 20.w,
                   ),
                   Text(
-                    '\$8.23',
+                    '\$${data['price']}',
                     style: TextStyle(
                         decoration: TextDecoration.lineThrough, fontSize: 12),
                   ),
@@ -445,7 +503,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
                       SizedBox(
                         width: 5.w,
                       ),
-                      Text('503')
+                      Text('${data['fav_count']}')
                     ],
                   )
                 ],
@@ -455,7 +513,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
         ]));
   }
 
-  _expandedTitle(String title) {
+  _expandedTitle(String title, {String text}) {
     return ExpansionTile(
       tilePadding: EdgeInsets.only(right: 15, left: 15),
       title: Text(
@@ -463,33 +521,41 @@ class _LiveProductPageState extends State<LiveProductPage> {
       ),
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(right: 15.0, left: 15.0),
-          child: Text(
-              'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
+          padding: const EdgeInsets.only(right: 15.0, left: 15.0, bottom: 10.0),
+          child: text != null
+              ? Html(data: text)
+              : Text(
+                  'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
         ),
       ],
     );
   }
 
   _bulletPoints(String title) {
-    return Padding(
-      padding: EdgeInsets.only(left: 15.0),
-      child: Row(
-        children: [
-          Container(
-            width: 5,
-            height: 5,
-            decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(30))),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          Text(title),
-        ],
-      ),
-    );
+    return title != null
+        ? Html(data: title)
+        : Text(
+            title,
+            style: TextStyle(color: Colors.grey),
+          );
+    // return Padding(
+    //   padding: EdgeInsets.only(left: 15.0),
+    //   child: Row(
+    //     children: [
+    //       Container(
+    //         width: 5,
+    //         height: 5,
+    //         decoration: BoxDecoration(
+    //             color: Colors.black,
+    //             borderRadius: BorderRadius.all(Radius.circular(30))),
+    //       ),
+    //       SizedBox(
+    //         width: 20,
+    //       ),
+    //       Text(title),
+    //     ],
+    //   ),
+    // );
   }
 
   _selectColors(bool isClick, {Color color, Function func}) {
@@ -568,7 +634,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
           child: Row(
             children: [
               Text(
-                'Flexible Gym Pants',
+                Constants.productSlugModel.product.title,
                 style: TextStyle(fontSize: 15),
               ),
               Spacer(),
@@ -592,7 +658,8 @@ class _LiveProductPageState extends State<LiveProductPage> {
                       SizedBox(
                         width: 5.w,
                       ),
-                      Text('503')
+                      Text(Constants.productSlugModel.product.favCount
+                          .toString())
                     ],
                   ),
                 ),
@@ -608,7 +675,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
           child: Row(
             children: [
               Text(
-                '\$14.51',
+                '\$${Constants.productSlugModel.product.salePrice}',
                 style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
               ),
               SizedBox(
@@ -617,7 +684,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
               Row(
                 children: [
                   Text(
-                    '\$8.23',
+                    '\$${Constants.productSlugModel.product.price}',
                     style: TextStyle(
                         decoration: TextDecoration.lineThrough, fontSize: 12),
                   ),

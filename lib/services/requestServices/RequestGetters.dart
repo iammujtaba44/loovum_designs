@@ -6,8 +6,8 @@ import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 
 class GetMethods {
-  static Future<bool> productSlugInit() async {
-    Constants.productSlugModel = await RequestServices.productSlug();
+  static Future<bool> productSlugInit({String slug}) async {
+    Constants.productSlugModel = await RequestServices.productSlug(slug: slug);
 
     if (Constants.productSlugModel != null) {
       return true;
