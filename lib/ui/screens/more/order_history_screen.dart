@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/screens/more/editProfile.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
-import 'package:preview/preview.dart';
 
 void main() {
   runApp(MyApp());
@@ -185,29 +184,4 @@ _listView(List<String> list, BuildContext context) {
       ],
     ),
   );
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

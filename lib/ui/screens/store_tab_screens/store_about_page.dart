@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/store_rating.dart';
-import 'package:preview/preview.dart';
+
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 void main() {
@@ -47,39 +47,55 @@ class _StoreAboutPageState extends State<StoreAboutPage> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-          child: Column(
-        
+      child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
               height: 300.h,
-             
               decoration: BoxDecoration(
                 color: Colors.grey,
-              
               ),
             ),
           ),
-          Text('A Family Business', style: TextStyle(fontSize: 12),),
-          SizedBox(height: 10.h,),
-          Text('Seller since Nov 15, 2015', style: TextStyle(fontSize: 10, color: Colors.grey),),
-          SizedBox(height: 10.h,),
-          Container(height: .3, width: double.infinity, color: Colors.grey,),
-          SizedBox(height: 10.h,),
+          Text(
+            'A Family Business',
+            style: TextStyle(fontSize: 12),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Text(
+            'Seller since Nov 15, 2015',
+            style: TextStyle(fontSize: 10, color: Colors.grey),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Container(
+            height: .3,
+            width: double.infinity,
+            color: Colors.grey,
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
           Padding(
             padding: EdgeInsets.only(left: 8.0, right: 10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Text('About'.toUpperCase()),
-              SizedBox(height: 10.h,),
-              Text('Lorem ipsum dolor sit amet, consetetur sadispscing elitr, sed diam nonumy eimod tempor invidunt ut labore et dolore.', style: TextStyle(fontSize: 12, color: Colors.grey[700]),)
-            ],),
+                Text('About'.toUpperCase()),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Text(
+                  'Lorem ipsum dolor sit amet, consetetur sadispscing elitr, sed diam nonumy eimod tempor invidunt ut labore et dolore.',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                )
+              ],
+            ),
           )
-
-
-          
         ],
       ),
     );
@@ -87,55 +103,59 @@ class _StoreAboutPageState extends State<StoreAboutPage> {
 
   _reviewsWidget() {
     return Column(
-          children: [
-            ListTile(
-              leading: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
-              ),
-              title: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+      children: [
+        ListTile(
+          leading: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+            ),
+          ),
+          title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text('Samuel Smith'),
                 SmoothStarRating(
-                rating: 3,
-                isReadOnly: false,
-                size: 20,
-                color: Colors.yellow,
-                borderColor: Colors.yellow,
-                filledIconData: Icons.star,
-                halfFilledIconData: Icons.star_half,
-                defaultIconData: Icons.star_border,
-                starCount: 5,
-                allowHalfRating: true,
-                spacing: 2.0,
-                onRated: (value) {
-                  print("rating value -> $value");
-                  // print("rating value dd -> ${value.truncate()}");
-                },
-              )
+                  rating: 3,
+                  isReadOnly: false,
+                  size: 20,
+                  color: Colors.yellow,
+                  borderColor: Colors.yellow,
+                  filledIconData: Icons.star,
+                  halfFilledIconData: Icons.star_half,
+                  defaultIconData: Icons.star_border,
+                  starCount: 5,
+                  allowHalfRating: true,
+                  spacing: 2.0,
+                  onRated: (value) {
+                    print("rating value -> $value");
+                    // print("rating value dd -> ${value.truncate()}");
+                  },
+                )
               ]),
-              trailing: Text('1 hour ago', style: TextStyle(fontSize: 10),),
-            ),
-
-            ListTile(
-              leading: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+          trailing: Text(
+            '1 hour ago',
+            style: TextStyle(fontSize: 10),
+          ),
+        ),
+        ListTile(
+            leading: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
-              title: Text('Lorem ipsum dolor sit amet, consetetur sadispscing elitr, sed diam nonumy eimod tempor invidunt ut labore et dolore.', style: TextStyle(fontSize: 12),)
-            )
-          ],
-        );
+            ),
+            title: Text(
+              'Lorem ipsum dolor sit amet, consetetur sadispscing elitr, sed diam nonumy eimod tempor invidunt ut labore et dolore.',
+              style: TextStyle(fontSize: 12),
+            ))
+      ],
+    );
   }
 
   Padding _item() {
@@ -218,29 +238,4 @@ class _StoreAboutPageState extends State<StoreAboutPage> {
       ),
     );
   }
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

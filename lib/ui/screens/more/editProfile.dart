@@ -5,8 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/screens/more/changepassword.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 
-import 'package:preview/preview.dart';
-
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 
 void main() {
@@ -130,29 +128,4 @@ class EditProfileState extends State<EditProfile> {
       ),
     );
   }
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

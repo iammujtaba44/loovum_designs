@@ -9,7 +9,6 @@ import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
-import 'package:preview/preview.dart';
 
 void main() {
   runApp(MyApp());

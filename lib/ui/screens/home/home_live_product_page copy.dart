@@ -7,7 +7,6 @@ import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 import 'package:loovum_designs/ui/shared/widgets/single_line_detail.dart';
 import 'package:loovum_designs/ui/shared/widgets/slide_to_act.dart';
 import 'package:loovum_designs/ui/shared/widgets/top_summary.dart';
-import 'package:preview/preview.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 void main() {
@@ -102,12 +101,21 @@ class _LiveProductPageState extends State<LiveProductPage> {
         SizedBox(
           height: 40.h,
         ),
-              Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0,),
-                child: pinkButton(height: 60.h, width: double.infinity, isRounded: true, title: 'Add to Bag', func: () {
-                  _settingModalBottomSheet(context);
-                }),
-              ),
+        Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            bottom: 16.0,
+          ),
+          child: pinkButton(
+              height: 60.h,
+              width: double.infinity,
+              isRounded: true,
+              title: 'Add to Bag',
+              func: () {
+                _settingModalBottomSheet(context);
+              }),
+        ),
         Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Row(
@@ -184,7 +192,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
                   borderRadius: BorderRadius.circular(0.0),
                   side: BorderSide(color: Colors.grey)),
               child: Text(
-                'LIVE'   ,
+                'LIVE',
                 style: TextStyle(color: Colors.grey[600]),
               ),
               onPressed: () {},
@@ -329,32 +337,30 @@ class _LiveProductPageState extends State<LiveProductPage> {
         SizedBox(
           height: 20,
         ),
-         GridView.builder(
-           shrinkWrap: true,
-           physics: NeverScrollableScrollPhysics(),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.all(0),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-           crossAxisCount: 2, childAspectRatio: 0.93, mainAxisSpacing: 5),
-          itemCount: 4 ,
+              crossAxisCount: 2, childAspectRatio: 0.93, mainAxisSpacing: 5),
+          itemCount: 4,
           itemBuilder: (context, index) {
-         return Column(
-           children: [
-             _item(),
-
-             
-           ],
-         );
+            return Column(
+              children: [
+                _item(),
+              ],
+            );
           },
         ),
         // ListView(
         //   shrinkWrap: true,
-       
+
         //           children: [ Column(
         //     children: [
         //       SizedBox(
         //         width: 15,
         //       ),
-        //       Container( 
+        //       Container(
         //         height: 200.h,
         //         width: 300.w,
         //         decoration: BoxDecoration(
@@ -387,7 +393,6 @@ class _LiveProductPageState extends State<LiveProductPage> {
         //     ],
         //   ),]
         // ),
-
       ],
     );
   }
@@ -447,8 +452,6 @@ class _LiveProductPageState extends State<LiveProductPage> {
               ),
             ],
           ),
-
-
         ]));
   }
 
@@ -668,7 +671,6 @@ class _LiveProductPageState extends State<LiveProductPage> {
     );
   }
 
-
   _dateContainer(String value) {
     return Container(
       height: 50,
@@ -685,7 +687,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
         ),
       ),
     );
-  }  
+  }
 }
 
 void _settingModalBottomSheet(context) {
@@ -698,109 +700,114 @@ void _settingModalBottomSheet(context) {
               child: new Column(
                 children: <Widget>[
                   Expanded(
-                                      child: ListView(children: [
-                      Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text('3/22 / Style 4'),
-                              Spacer(),
-                              Text('1'),
-                            ],
-                          ),
-                          Divider(
-                            thickness: 1,
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                        singleLineDetail(title: 'ORDER SUBTOTAL', price: '\$0.00' ),
-                          
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          singleLineDetail(title: 'ORDER SUBTOTAL', price: '\$0.00' ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          singleLineDetail(title: 'ORDER SUBTOTAL', price: '\$0.00' ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'ORDER TOTAL',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              Spacer(),
-                              Text(
-                                '\$23.21',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Column(
+                    child: ListView(
                       children: [
-                        Container(
-                          color: Colors.grey[300],
-                          width: double.infinity,
-                          child: Stack(
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(
                             children: [
-                              Padding(
-                                padding:  EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('SHIP TO...'),
-                                    SizedBox(
-                                      height: 10.h,
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.all(20),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.all(Radius.circular(10)),
-                                      ),
-                                      child: Text(
-                                          'Orkhan Rasulov (default) - 409 Summerbrook Dr Alanta, GA 30350'),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text('PAY WITH...'),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(20),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.all(Radius.circular(10)),
-                                      ),
-                                      child: Text(
-                                          'Orkhan Rasulov (default) - Ending 1869'),
-                                    ),
-                                  ],
-                                ),
-                              )
+                              Row(
+                                children: [
+                                  Text('3/22 / Style 4'),
+                                  Spacer(),
+                                  Text('1'),
+                                ],
+                              ),
+                              Divider(
+                                thickness: 1,
+                              ),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              singleLineDetail(
+                                  title: 'ORDER SUBTOTAL', price: '\$0.00'),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              singleLineDetail(
+                                  title: 'ORDER SUBTOTAL', price: '\$0.00'),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              singleLineDetail(
+                                  title: 'ORDER SUBTOTAL', price: '\$0.00'),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'ORDER TOTAL',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    '\$23.21',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              color: Colors.grey[300],
+                              width: double.infinity,
+                              child: Stack(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('SHIP TO...'),
+                                        SizedBox(
+                                          height: 10.h,
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.all(20),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                          ),
+                                          child: Text(
+                                              'Orkhan Rasulov (default) - 409 Summerbrook Dr Alanta, GA 30350'),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text('PAY WITH...'),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.all(20),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10)),
+                                          ),
+                                          child: Text(
+                                              'Orkhan Rasulov (default) - Ending 1869'),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                    ],),
                   ),
                   Builder(
                     builder: (context) {
@@ -828,36 +835,10 @@ void _settingModalBottomSheet(context) {
                       );
                     },
                   ),
-               
                 ],
               ),
             );
           },
         );
       });
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

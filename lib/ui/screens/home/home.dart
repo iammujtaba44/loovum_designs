@@ -8,15 +8,12 @@ import 'package:loovum_designs/ui/screens/more/orderHistory1_Screen.dart';
 import 'package:loovum_designs/ui/screens/search/search_page.dart';
 import 'package:loovum_designs/ui/screens/shoppingBag/shoppingBag_Screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
-import 'package:preview/preview.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -40,7 +37,6 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Home(),
-    
     );
   }
 }
@@ -51,17 +47,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   PageController pageController;
 
   int pageIndex = 0;
 
-   onTapChangedPage(int pageIndex) {
+  onTapChangedPage(int pageIndex) {
     pageController.animateToPage(pageIndex,
         duration: Duration(milliseconds: 300), curve: Curves.bounceInOut);
   }
 
-   onPageChanged(int pageIndex) {
+  onPageChanged(int pageIndex) {
     setState(() {
       this.pageIndex = pageIndex;
     });
@@ -73,77 +68,56 @@ class _HomeState extends State<Home> {
     super.initState();
     pageController = PageController();
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          
           HomeTabs(),
           SearchPage(),
           BlogScreen(),
           ShoppingBagScreen(),
-         OrderHistory1(),
-          
-         
+          OrderHistory1(),
         ],
         controller: pageController,
         physics: NeverScrollableScrollPhysics(),
         onPageChanged: onPageChanged,
-      ), 
-      
-      bottomNavigationBar:  CupertinoTabBar(
+      ),
+      bottomNavigationBar: CupertinoTabBar(
         items: [
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/images/home_black.png'), )),
+              icon: ImageIcon(
+            AssetImage('assets/images/home_black.png'),
+          )),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/images/search_icon.png'), )),
+              icon: ImageIcon(
+            AssetImage('assets/images/search_icon.png'),
+          )),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/images/middle_icon2.png'), )),
+              icon: ImageIcon(
+            AssetImage('assets/images/middle_icon2.png'),
+          )),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/images/shopping_bag.png'), )),
+              icon: ImageIcon(
+            AssetImage('assets/images/shopping_bag.png'),
+          )),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/images/more_icon.png'), )),
+              icon: ImageIcon(
+            AssetImage('assets/images/more_icon.png'),
+          )),
         ],
         currentIndex: pageIndex,
         activeColor: Colors.black,
         inactiveColor: Color(0xFFC3C1C1),
-        backgroundColor: Colors.white, 
+        backgroundColor: Colors.white,
         onTap: onTapChangedPage,
-      ),);
+      ),
+    );
   }
 
   void dispose() {
     super.dispose();
     pageController.dispose();
   }
-
-  
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

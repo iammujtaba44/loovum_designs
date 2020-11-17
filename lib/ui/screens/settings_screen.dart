@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
-import 'package:preview/preview.dart';
 
 void main() {
   runApp(MyApp());
@@ -55,8 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ScreenUtil.init(context, width: 750, height: 1334);
     return Column(
       children: [
-        
-         appBar(height: 120.h, width: 750.w, title: 'Settings'),
+        appBar(height: 120.h, width: 750.w, title: 'Settings'),
         _listView(list),
       ],
     );
@@ -103,31 +101,4 @@ _listView(List<String> list) {
       },
     ),
   );
-}
-
-
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

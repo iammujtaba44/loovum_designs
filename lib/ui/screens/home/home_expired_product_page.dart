@@ -7,7 +7,6 @@ import 'package:loovum_designs/ui/screens/home/store_profile/home_store_profile.
 import 'package:loovum_designs/ui/screens/home/store_profile/live_product.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/top_summary.dart';
-import 'package:preview/preview.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 void main() {
@@ -801,29 +800,4 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
       ),
     );
   }
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

@@ -5,8 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/screens/more/accountSetting.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 
-import 'package:preview/preview.dart';
-
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 
 void main() {
@@ -146,15 +144,15 @@ class ChangePasswordState extends State<ChangePassword> {
                             margin: EdgeInsets.symmetric(
                                 vertical: 30.0, horizontal: 10.0),
                             child: pinkButton(
-                              func: () {
-                                Navigator.push(
+                                func: () {
+                                  Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => Scaffold(
                                             body: Center(
                                                 child: AccountSettingPage())),
                                       ));
-                              },
+                                },
                                 height: 80.h,
                                 width: MediaQuery.of(context).size.width,
                                 title: "Update password"),
@@ -172,29 +170,4 @@ class ChangePasswordState extends State<ChangePassword> {
       ),
     );
   }
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/store_rating.dart';
-import 'package:preview/preview.dart';
+
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 void main() {
@@ -47,75 +47,80 @@ class _StoreReviewsPageState extends State<StoreReviewsPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
- 
       children: [
         storeRatingWidget(context, type: '5 star', numOfRates: '23k'),
         storeRatingWidget(context, type: '4 star', numOfRates: '5.1k'),
         storeRatingWidget(context, type: '3 star', numOfRates: '1.8k'),
         storeRatingWidget(context, type: '2 star', numOfRates: '896'),
         storeRatingWidget(context, type: '1 star', numOfRates: '1.2k'),
-        Expanded(child: ListView(
-          padding: EdgeInsets.all(0),
-          children: [
-          _reviewsWidget(),
-        _reviewsWidget(),
-        ],),)
-        
+        Expanded(
+          child: ListView(
+            padding: EdgeInsets.all(0),
+            children: [
+              _reviewsWidget(),
+              _reviewsWidget(),
+            ],
+          ),
+        )
       ],
     );
   }
 
   _reviewsWidget() {
     return Column(
-          children: [
-            ListTile(
-              leading: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
-              ),
-              title: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+      children: [
+        ListTile(
+          leading: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+            ),
+          ),
+          title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text('Samuel Smith'),
                 SmoothStarRating(
-                rating: 3,
-                isReadOnly: false,
-                size: 20,
-                color: Colors.yellow,
-                borderColor: Colors.yellow,
-                filledIconData: Icons.star,
-                halfFilledIconData: Icons.star_half,
-                defaultIconData: Icons.star_border,
-                starCount: 5,
-                allowHalfRating: true,
-                spacing: 2.0,
-                onRated: (value) {
-                  print("rating value -> $value");
-                  // print("rating value dd -> ${value.truncate()}");
-                },
-              )
+                  rating: 3,
+                  isReadOnly: false,
+                  size: 20,
+                  color: Colors.yellow,
+                  borderColor: Colors.yellow,
+                  filledIconData: Icons.star,
+                  halfFilledIconData: Icons.star_half,
+                  defaultIconData: Icons.star_border,
+                  starCount: 5,
+                  allowHalfRating: true,
+                  spacing: 2.0,
+                  onRated: (value) {
+                    print("rating value -> $value");
+                    // print("rating value dd -> ${value.truncate()}");
+                  },
+                )
               ]),
-              trailing: Text('1 hour ago', style: TextStyle(fontSize: 10),),
-            ),
-
-            ListTile(
-              leading: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
+          trailing: Text(
+            '1 hour ago',
+            style: TextStyle(fontSize: 10),
+          ),
+        ),
+        ListTile(
+            leading: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
-              title: Text('Lorem ipsum dolor sit amet, consetetur sadispscing elitr, sed diam nonumy eimod tempor invidunt ut labore et dolore.', style: TextStyle(fontSize: 12),)
-            )
-          ],
-        );
+            ),
+            title: Text(
+              'Lorem ipsum dolor sit amet, consetetur sadispscing elitr, sed diam nonumy eimod tempor invidunt ut labore et dolore.',
+              style: TextStyle(fontSize: 12),
+            ))
+      ],
+    );
   }
 
   Padding _item() {
@@ -198,29 +203,4 @@ class _StoreReviewsPageState extends State<StoreReviewsPage> {
       ),
     );
   }
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

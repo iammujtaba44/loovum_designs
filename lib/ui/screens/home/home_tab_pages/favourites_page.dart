@@ -1,11 +1,15 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loovum_designs/services/models/InstaShopModel.dart';
+import 'package:loovum_designs/services/models/search/PopularModel.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/favourites_2_page.dart';
 import 'package:loovum_designs/ui/shared/roundedButton.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 import 'package:loovum_designs/ui/shared/widgets/top_summary.dart';
-import 'package:preview/preview.dart';
 
 void main() {
   runApp(MyApp());
@@ -45,36 +49,88 @@ class FavouritesPage extends StatefulWidget {
 }
 
 class _FavouritesPageState extends State<FavouritesPage> {
-  List<String> _list = [
-    'Popular',
-    'Graphic Tees',
-    'Natural Design',
-    'Accessories',
-    'Jewellery'
-  ];
+  bool hasData = false;
+  bool favouriteCountHasData = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    bool result = await GetMethods.popularInit();
+    print(result);
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+
+    getFavouriteCounts();
+  }
+
+  getFavouriteCounts() async {
+    bool result = await GetMethods.favouriteCount();
+    print(result);
+    if (result) {
+      if (mounted) {
+        setState(() {
+          favouriteCountHasData = true;
+        });
+      } else if (mounted) {
+        setState(() {
+          favouriteCountHasData = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     var ScreenSize = MediaQuery.of(context).size;
 
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          _upperContainer(),
-          _gridViewContainer(),
-          InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Favourites_2()));
-            },
-            child: Container(
-                margin: EdgeInsets.only(
-                    left: 18.0, right: 18.0, bottom: 25.0, top: 40.0),
-                child: RoundedButton(ScreenSize.width, 55.0, "View More", 1.2,
-                    TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400))),
-          )
-        ],
-      ),
+      child: !favouriteCountHasData && !hasData
+          ? Container(
+              child: Center(
+              child: SpinKitFadingFour(
+                color: const Color(0xFFE6798A),
+                size: 50.0,
+              ),
+            ))
+          : Column(
+              children: [
+                _upperContainer(),
+                _gridViewContainer(),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Favourites_2()));
+                  },
+                  child: Container(
+                      margin: EdgeInsets.only(
+                          left: 18.0, right: 18.0, bottom: 25.0, top: 40.0),
+                      child: RoundedButton(
+                          ScreenSize.width,
+                          55.0,
+                          "View More",
+                          1.2,
+                          TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w400))),
+                )
+              ],
+            ),
     );
   }
 
@@ -97,12 +153,22 @@ class _FavouritesPageState extends State<FavouritesPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              topShortSummary(title: 'Live', number: '0'),
+              topShortSummary(
+                  title: 'Live',
+                  number:
+                      Constants.favouriteCountModel?.active.toString() ?? '0'),
               Padding(
                 padding: EdgeInsets.only(left: 10.0),
-                child: topShortSummary(title: 'Sneak Peeks', number: '0'),
+                child: topShortSummary(
+                    title: 'Sneak Peeks',
+                    number:
+                        Constants.favouriteCountModel?.sneakpeek.toString() ??
+                            '0'),
               ),
-              topShortSummary(title: 'History', number: '-'),
+              topShortSummary(
+                  title: 'History',
+                  number: Constants.favouriteCountModel?.inactive.toString() ??
+                      '-'),
             ],
           ),
           Padding(
@@ -158,13 +224,13 @@ class _FavouritesPageState extends State<FavouritesPage> {
         crossAxisCount: 2,
         crossAxisSpacing: 20.0,
         children: List.generate(4, (index) {
-          return _items();
+          return _items(Constants.popularModel.data[index]);
         }),
       ),
     );
   }
 
-  _items() {
+  _items(Dater data) {
     var ScreenSize = MediaQuery.of(context).size;
     MediaQueryData d = MediaQuery.of(context);
     return Column(
@@ -193,7 +259,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
               width: 6.0,
             ),
             Text(
-              '\$14.51',
+              '\$${data.salePrice}',
               style: TextStyle(
                   color: Color(0xFFE6798A), fontSize: ScreenSize.width * 0.04),
             ),
@@ -201,7 +267,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
               width: 6.0,
             ),
             Text(
-              '\$8.23',
+              '\$${data.price}',
               style: TextStyle(
                   decoration: TextDecoration.lineThrough,
                   fontSize: ScreenSize.width * 0.04,
@@ -214,7 +280,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
               color: Colors.grey,
             ),
             SizedBox(width: 5.0),
-            Text('503',
+            Text('${data.favCount}',
                 style: TextStyle(
                     fontSize: ScreenSize.width * 0.04, color: Colors.grey))
           ],
@@ -280,29 +346,4 @@ class _FavouritesPageState extends State<FavouritesPage> {
           ),
         ]));
   }
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }

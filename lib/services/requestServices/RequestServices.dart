@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:loovum_designs/services/apis/Apis.dart';
+import 'package:loovum_designs/services/models/FavouriteCount.dart';
 import 'package:loovum_designs/services/models/LoginModel.dart';
 import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/models/RegisterModel.dart';
@@ -11,6 +12,7 @@ import 'package:loovum_designs/services/models/search/CollectionModel.dart';
 import 'package:loovum_designs/services/models/search/EndingSoon.dart';
 import 'package:loovum_designs/services/models/search/PopularModel.dart';
 import 'package:loovum_designs/services/models/search/search_model.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 
 class RequestServices {
   static Future<RegisterModel> signup(
@@ -42,7 +44,23 @@ class RequestServices {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;
+
       return loginModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  static Future<FavouriteCountModel> favouriteCount() async {
+    var response = await http.get(FavouriteCountUrl, headers: {
+      'Authorization': 'Bearer ${Constants.bearerToken}',
+    });
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      print(map);
+      return favouriteCountFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
       return null;
@@ -55,7 +73,7 @@ class RequestServices {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;
-      //print(map);
+      print(map);
       return popularModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");

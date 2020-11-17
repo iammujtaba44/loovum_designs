@@ -6,6 +6,16 @@ import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 
 class GetMethods {
+  static Future<bool> favouriteCount() async {
+    Constants.favouriteCountModel = await RequestServices.favouriteCount();
+
+    if (Constants.favouriteCountModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   //Popular Init
   static Future<bool> popularInit() async {
     Constants.popularModel = await RequestServices.popular();
@@ -83,10 +93,12 @@ class GetMethods {
       Constants.loginModel = value;
     });
     if (Constants.loginModel != null) {
-      if (Constants.loginModel.success == false)
+      if (Constants.loginModel.success == false) {
         return false;
-      else
+      } else {
+        Constants.bearerToken = Constants.loginModel.token;
         return true;
+      }
     }
   }
 

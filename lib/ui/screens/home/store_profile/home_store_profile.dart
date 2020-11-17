@@ -8,7 +8,7 @@ import 'package:loovum_designs/ui/screens/home/store_profile/store_tab_screens/s
 import 'package:loovum_designs/ui/screens/home/store_profile/store_tab_screens/store_products_page.dart';
 import 'package:loovum_designs/ui/screens/home/store_profile/store_tab_screens/store_reviews_page.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
-import 'package:preview/preview.dart';
+
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 void main() {
@@ -146,29 +146,4 @@ class _StoreProfileState extends State<StoreProfile> {
       ),
     );
   }
-}
-
-class IPhone5 extends PreviewProvider {
-  @override
-  String get title => 'iPhone 5';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          key: Key('preview'),
-          frame: Frames.iphone5,
-          child: MyApp(),
-        ),
-      ];
-}
-
-class IPhoneX extends PreviewProvider {
-  @override
-  String get title => 'Iphone X';
-  @override
-  List<Preview> get previews => [
-        Preview(
-          frame: Frames.iphoneX,
-          child: MyApp(),
-        ),
-      ];
 }
