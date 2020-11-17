@@ -10,10 +10,6 @@ import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
 class SneakPeak2 extends StatefulWidget {
   final String title;
   final bool type;
