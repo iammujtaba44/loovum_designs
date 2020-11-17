@@ -15,12 +15,12 @@ class SearchModel {
     this.randomProducts,
   });
 
-  List<Product> products;
+  List<SearchProduct> products;
   List<dynamic> randomProducts;
 
   factory SearchModel.fromJson(Map<String, dynamic> json) => SearchModel(
-        products: List<Product>.from(
-            json["products"].map((x) => Product.fromJson(x))),
+        products: List<SearchProduct>.from(
+            json["products"].map((x) => SearchProduct.fromJson(x))),
         randomProducts:
             List<dynamic>.from(json["randomProducts"].map((x) => x)),
       );
@@ -31,8 +31,8 @@ class SearchModel {
       };
 }
 
-class Product {
-  Product({
+class SearchProduct {
+  SearchProduct({
     this.id,
     this.categoryId,
     this.subcategoryId,
@@ -126,7 +126,7 @@ class Product {
   List<Attribute> attributes;
   List<Favourite> favourite;
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
+  factory SearchProduct.fromJson(Map<String, dynamic> json) => SearchProduct(
         id: json["id"],
         categoryId: json["category_id"],
         subcategoryId:

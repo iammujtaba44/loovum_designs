@@ -7,6 +7,7 @@ import 'package:loovum_designs/services/models/search/CollectionModel.dart';
 import 'package:loovum_designs/services/models/search/EndingSoon.dart';
 
 import 'package:loovum_designs/services/models/search/PopularModel.dart';
+import 'package:loovum_designs/services/models/search/search_model.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/search/collections_page.dart';
@@ -17,39 +18,6 @@ import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:preview/preview.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
-          primarySwatch: Colors.blue,
-          // This makes the visual density adapt to the platform that you run
-          // the app on. For desktop platforms, the controls will be smaller and
-          // closer together (more dense) than on mobile platforms.
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: Scaffold(
-          body: Center(child: SearchPage()),
-        ));
-  }
-}
 
 class SearchPage extends StatefulWidget {
   @override
@@ -69,28 +37,32 @@ class _SearchPageState extends State<SearchPage> {
   bool popularHasData = false;
   bool endingHasData = false;
   bool collectionHasData = false;
+  bool searchHasData = false;
+  bool searchHasData2 = false;
 
-  getSearchResult() async {
-    bool result = await GetMethods.searchDataInit('a');
+  TextEditingController searchCtr = TextEditingController();
+
+  getSearchResult({String text}) async {
+    bool result = await GetMethods.searchDataInit(text);
     if (result) {
       if (mounted)
         setState(() {
-          hasData = true;
+          searchHasData2 = true;
         });
     } else {
       if (mounted)
         setState(() {
-          hasData = false;
+          searchHasData2 = false;
         });
     }
-    print(Constants.searchModel.products[0]);
+    print(Constants.searchModel.products.length);
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
+    // getSearchResult();
     getPopularData();
   }
 
@@ -105,152 +77,206 @@ class _SearchPageState extends State<SearchPage> {
   _body() {
     var ScreenSize = MediaQuery.of(context).size;
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(children: [
-          appBar(
-              height: 150.h,
-              width: 750.w,
-              title: 'Order History',
-              isSearchBar: true),
-          SizedBox(
-            height: 10.0,
-          ),
-          _horizList(),
-          SizedBox(
-            height: 10.0,
-          ),
-          _lowerListContainer(),
-          _textContainer("Popular"),
-          _popularGridView(),
-          Container(
-              margin: EdgeInsets.only(
-                  left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
-              child: RoundedButton(ScreenSize.width, 55.0, "See All Popular",
-                  1.2, TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
-                  ontap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SneakPeak2(
-                              title: 'Popular',
-                              type: true,
-                            )));
-              })),
-          Container(
-            margin: EdgeInsets.only(
-                left: 18.0, right: 18.0, bottom: 25.0, top: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Collections',
-                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20.0),
-                ),
-                Text(
-                  'View All',
-                  style: TextStyle(color: Colors.pink),
-                ),
-              ],
-            ),
-          ),
-
-          !collectionHasData
-              ? Container(
-                  height: ScreenSize.height > 650 && ScreenSize.height < 750
-                      ? 350.h
-                      : 300.h,
-                  child: Center(
-                    child: SpinKitFadingFour(
-                      color: const Color(0xFFE6798A),
-                      size: 50.0,
+        child: SingleChildScrollView(
+      child: Column(children: [
+        appBar(
+            height: 150.h,
+            width: 750.w,
+            title: 'Order History',
+            isSearchBar: true),
+        !searchHasData
+            ? Column(
+                children: [
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  _horizList(),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  _lowerListContainer(),
+                  _textContainer("Popular"),
+                  _popularGridView(),
+                  Container(
+                      margin: EdgeInsets.only(
+                          left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
+                      child: RoundedButton(
+                          ScreenSize.width,
+                          55.0,
+                          "See All Popular",
+                          1.2,
+                          TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400), ontap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SneakPeak2(
+                                      title: 'Popular',
+                                      type: true,
+                                    )));
+                      })),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 18.0, right: 18.0, bottom: 25.0, top: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Collections',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400, fontSize: 20.0),
+                        ),
+                        Text(
+                          'View All',
+                          style: TextStyle(color: Colors.pink),
+                        ),
+                      ],
                     ),
                   ),
-                )
-              : Container(
-                  //  margin: EdgeInsets.only(left: 17.0),
-                  color: Colors.transparent,
-                  height: ScreenSize.height > 650 && ScreenSize.height < 750
-                      ? 350.h
-                      : 300.h,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: Constants.collectionModel.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.only(
-                          left: 16.0,
-                        ),
-                        // height: 100.h,
-                        // width: 470.w,
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              // margin: EdgeInsets.only(
-                              //   left: 16.0,
-                              // ),
-                              height: 260.h,
-                              width: 470.w,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 6.0,
-                                left: 3.0,
-                              ),
-                              child: Text(
-                                '${Constants.collectionModel[index].name}',
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
 
-          SizedBox(
-            height: 20.0,
-          ),
-          _textContainer("New Today"),
-          // _gridViewContainer(),
-          Container(
-              margin: EdgeInsets.only(
-                  left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
-              child: RoundedButton(ScreenSize.width, 55.0, "See All New Today",
-                  1.2, TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400))),
-          _textContainer("Ending Soon"),
-          _endingSoonGridView(),
-          Container(
-              margin: EdgeInsets.only(
-                  left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
-              child: RoundedButton(
-                  ScreenSize.width,
-                  55.0,
-                  "See All Ending Soon",
-                  1.2,
-                  TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
-                  ontap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SneakPeak2(
-                              title: 'Ending soon',
-                              type: false,
-                            )));
-              })),
-        ]),
-      ),
-    );
+                  !collectionHasData
+                      ? Container(
+                          height:
+                              ScreenSize.height > 650 && ScreenSize.height < 750
+                                  ? 350.h
+                                  : 300.h,
+                          child: Center(
+                            child: SpinKitFadingFour(
+                              color: const Color(0xFFE6798A),
+                              size: 50.0,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          //  margin: EdgeInsets.only(left: 17.0),
+                          color: Colors.transparent,
+                          height:
+                              ScreenSize.height > 650 && ScreenSize.height < 750
+                                  ? 350.h
+                                  : 300.h,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: Constants.collectionModel.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: EdgeInsets.only(
+                                  left: 16.0,
+                                ),
+                                // height: 100.h,
+                                // width: 470.w,
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      // margin: EdgeInsets.only(
+                                      //   left: 16.0,
+                                      // ),
+                                      height: 260.h,
+                                      width: 470.w,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        top: 6.0,
+                                        left: 3.0,
+                                      ),
+                                      child: Text(
+                                        '${Constants.collectionModel[index].name}',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  _textContainer("New Today"),
+                  // _gridViewContainer(),
+                  Container(
+                      margin: EdgeInsets.only(
+                          left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
+                      child: RoundedButton(
+                          ScreenSize.width,
+                          55.0,
+                          "See All New Today",
+                          1.2,
+                          TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w400))),
+                  _textContainer("Ending Soon"),
+                  _endingSoonGridView(),
+                  Container(
+                      margin: EdgeInsets.only(
+                          left: 18.0, right: 18.0, bottom: 25.0, top: 15.0),
+                      child: RoundedButton(
+                          ScreenSize.width,
+                          55.0,
+                          "See All Ending Soon",
+                          1.2,
+                          TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w400), ontap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SneakPeak2(
+                                      title: 'Ending soon',
+                                      type: false,
+                                    )));
+                      })),
+                ],
+              )
+            : !searchHasData2
+                ? Padding(
+                    padding: EdgeInsets.only(top: ScreenSize.height / 2.5),
+                    child: Container(
+                        child: Center(
+                      child: SpinKitFadingFour(
+                        color: const Color(0xFFE6798A),
+                        size: 50.0,
+                      ),
+                    )),
+                  )
+                : Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 25,
+                        ),
+                        child: Center(
+                            child: Text(
+                          '${Constants.searchModel.products.length} results for ${searchCtr.text}',
+                          style: TextStyle(fontSize: 15.0),
+                        )),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          children: List.generate(
+                              Constants.searchModel.products.length, (index) {
+                            return _itemSearch(
+                                Constants.searchModel.products[index]);
+                          }),
+                        ),
+                      ),
+                    ],
+                  )
+      ]),
+    ));
   }
 
   _textContainer(String _label) {
@@ -647,6 +673,154 @@ class _SearchPageState extends State<SearchPage> {
     //   print(Constants.collectionModel[0].name);
   }
 
+  searchBody() {
+    ScreenUtil.init(context, width: 750, height: 1334);
+    var ScreenSize = MediaQuery.of(context).size;
+    return SafeArea(
+        child: !hasData
+            ? Container(
+                child: Center(
+                child: SpinKitFadingFour(
+                  color: const Color(0xFFE6798A),
+                  size: 50.0,
+                ),
+              ))
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: 25,
+                      ),
+                      child: Center(
+                          child: Text(
+                        '${Constants.searchModel.products.length} results for ${searchCtr.text}',
+                        style: TextStyle(fontSize: 15.0),
+                      )),
+                    ),
+
+                    SingleChildScrollView(
+                      child: Column(
+                        children: List.generate(
+                            Constants.searchModel.products.length, (index) {
+                          return _itemSearch(
+                              Constants.searchModel.products[index]);
+                        }),
+                      ),
+                    ),
+                    // ListView.builder(
+                    //     itemCount: widget.type
+                    //         ? Constants.popularModel.total
+                    //         : Constants.endingSoonModel.total,
+                    //     itemBuilder: (context, index) {
+                    //       return widget.type
+                    //           ? _itemPopular(Constants.popularModel.data[index])
+                    //           : _itemEnding(
+                    //               Constants.endingSoonModel.data[index]);
+                    //     }),
+                  ],
+                ),
+              ));
+  }
+
+  Padding _itemSearch(SearchProduct data) {
+    var ScreenSize = MediaQuery.of(context).size;
+    return Padding(
+      padding: EdgeInsets.only(top: 35, right: 18, left: 18),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: ScreenSize.height * 0.57,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: Image.network(
+                'https://api.scentpeeks.com/storage/banner/1604762439_5fa6bb47c25ce.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          Row(
+            children: [
+              Expanded(
+                  child: Text(
+                '${data.title == null ? '' : data.title} | ',
+                style: TextStyle(fontSize: 15.0),
+              )),
+              Spacer(),
+              Row(
+                children: [
+                  Icon(
+                    Icons.favorite_border,
+                    size: 19,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    data.favCount == null ? '' : '${data.favCount}',
+                    style: TextStyle(color: Colors.grey),
+                  )
+                ],
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 10.0.w,
+              top: 15.h,
+            ),
+            child: Row(
+              children: [
+                Text(
+                  '\$${data.salePrice}',
+                  style: TextStyle(color: Color(0xFFE6798A), fontSize: 15.0),
+                ),
+                SizedBox(
+                  width: 20.w,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '\$${data.price}',
+                      style: TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          fontSize: 13.0),
+                    ),
+                    SizedBox(
+                      width: 10.w,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 2, bottom: 2),
+                        child: Text(
+                          'FREE SHIPPING',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   appBar(
       {double height,
       double width,
@@ -667,14 +841,48 @@ class _SearchPageState extends State<SearchPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextFormField(
-                  readOnly: true,
+                  onFieldSubmitted: (value) {
+                    if (mounted)
+                      setState(() {
+                        if (searchHasData2) searchHasData2 = false;
+                        getSearchResult(text: value);
+                        searchHasData = true;
+                      });
+                  },
+                  //readOnly: true,
                   cursorColor: Colors.black,
+                  controller: searchCtr,
                   decoration: new InputDecoration(
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
+                      suffixIcon: Wrap(
+                        children: [
+                          MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                if (searchCtr.text.isNotEmpty) {
+                                  getSearchResult(text: searchCtr.text);
+                                  searchHasData = true;
+                                }
+                              });
+                            },
+                            child: Text('Submit'),
+                          ),
+                          MaterialButton(
+                            onPressed: () {
+                              setState(() {
+                                searchHasData = false;
+                                searchHasData2 = false;
+                                searchCtr.clear();
+                              });
+                            },
+                            child: Text('Cancel'),
+                          )
+                        ],
+                      ),
                       contentPadding: EdgeInsets.only(
                           left: 15, bottom: 11, top: 11, right: 15),
                       hintText: 'Search...'),
