@@ -8,6 +8,7 @@ import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/models/RegisterModel.dart';
 import 'package:loovum_designs/services/models/RequiredModel.dart';
 import 'package:loovum_designs/services/models/UserModel.dart';
+import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
 import 'package:loovum_designs/services/models/search/CollectionModel.dart';
 import 'package:loovum_designs/services/models/search/EndingSoon.dart';
 import 'package:loovum_designs/services/models/search/PopularModel.dart';
@@ -46,6 +47,24 @@ class RequestServices {
       final String map = response.body;
 
       return loginModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  // This is method has to be implemented with a slug
+  // but for now it's implemented without slug
+  // right now it's hard-coded.
+
+  static Future<ProductSlugModel> productSlug() async {
+    var response = await http.get(ProductSlugUrl + "mesh-v-neck-tee",
+        headers: {'Authorization': 'Bearer ${Constants.bearerToken}'});
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      print(map);
+      return productSlugModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
       return null;

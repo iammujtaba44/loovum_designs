@@ -350,23 +350,23 @@ class SlideActionState extends State<SlideAction>
 
     _cancelAnimationController = AnimationController(
       //value: this,
-      // vsync: this,
+      vsync: this,
       duration: widget.animationDuration,
     );
     _checkAnimationController = AnimationController(
       //TickerProvider: this,
-      // vsync: this,
+      vsync: this,
       duration: widget.animationDuration,
     );
     _shrinkAnimationController = AnimationController(
       // TickerProvider: this,
-      // vsync: this,
+      vsync: this,
       duration: widget.animationDuration,
     );
 
     _resizeAnimationController = AnimationController(
       // TickerProvider: this,
-      // vsync: this,
+      vsync: this,
       duration: widget.animationDuration,
     );
 

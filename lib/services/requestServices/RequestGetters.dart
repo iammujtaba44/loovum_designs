@@ -6,6 +6,16 @@ import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 
 class GetMethods {
+  static Future<bool> productSlugInit() async {
+    Constants.productSlugModel = await RequestServices.productSlug();
+
+    if (Constants.productSlugModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static Future<bool> favouriteCount() async {
     Constants.favouriteCountModel = await RequestServices.favouriteCount();
 

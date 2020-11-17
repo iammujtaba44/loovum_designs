@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/RequestServices.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
+import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/sneak_peeks/sneak_peeks_dialog.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
@@ -113,10 +114,24 @@ class _SneakPeeksPageState extends State<SneakPeeksPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: IconButton(
                                     onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) =>
-                                              ExitConfirmationDialog());
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Scaffold(
+                                                body: ListView(
+                                                    physics:
+                                                        BouncingScrollPhysics(),
+                                                    padding: EdgeInsets.all(0),
+                                                    children: [
+                                                  ExpiredProductPage()
+                                                ])),
+                                          ));
+
+                                      //   showDialog(
+                                      //       context: context,
+                                      //       builder: (context) =>
+                                      //           ExitConfirmationDialog());
+                                      //
                                     },
                                     icon: Icon(
                                       Icons.help_outline,

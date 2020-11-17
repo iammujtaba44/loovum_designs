@@ -1,6 +1,9 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_live_product_page%20copy.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/sneak_peeks/sneak_peeks_dialog.dart';
 import 'package:loovum_designs/ui/screens/home/store_profile/home_store_profile.dart';
@@ -60,432 +63,475 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
 
   bool _reviewsTile = false;
 
+  bool hasData = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    bool result = await GetMethods.productSlugInit();
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     var ScreenSize = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Column(
-        children: [
-          appBarWithIcon(
-              height: 120.h,
-              width: ScreenSize.width,
-              title: 'Flexible Gym Pants',
-              iconbtn: IconButton(
-                  icon: Icon(Icons.keyboard_arrow_left_sharp,
-                      color: Colors.black),
-                  onPressed: null),
-              trailingIcon: IconButton(
-                  icon: Icon(
-                    Icons.shopping_bag_outlined,
-                    color: Colors.black,
-                  ),
-                  onPressed: null)),
-          Stack(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Scaffold(
-                              body: ListView(
-                                  physics: BouncingScrollPhysics(),
-                                  padding: EdgeInsets.all(0),
-                                  children: [LiveProduct()]))));
-                },
-                child: Container(
-                  color: Colors.grey,
-                  height: ScreenSize.height * 0.69,
-                ),
+    return !hasData
+        ? Container(
+            child: Center(
+              child: SpinKitFadingFour(
+                color: const Color(0xFFE6798A),
+                size: 50.0,
               ),
-              Positioned(
-                bottom: 10,
-                right: 10,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: 55,
+            ),
+          )
+        : SafeArea(
+            child: Column(
+              children: [
+                appBarWithIcon(
+                    height: 120.h,
+                    width: ScreenSize.width,
+                    title: Constants.productSlugModel.product.slug,
+                    iconbtn: IconButton(
+                        icon: Icon(Icons.keyboard_arrow_left_sharp,
+                            color: Colors.black),
+                        onPressed: null),
+                    trailingIcon: IconButton(
+                        icon: Icon(
+                          Icons.shopping_bag_outlined,
+                          color: Colors.black,
+                        ),
+                        onPressed: null)),
+                Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Scaffold(
+                                    body: ListView(
+                                        physics: BouncingScrollPhysics(),
+                                        padding: EdgeInsets.all(0),
+                                        children: [LiveProduct()]))));
+                      },
+                      child: Container(
+                        color: Colors.grey,
+                        height: ScreenSize.height * 0.69,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 10,
+                      right: 10,
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 55,
+                        height: 25,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        child: Text('1 of 15'),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 17.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => StoreProfile()),
+                            );
+                          },
+                          child: _littleSamplePhoto(),
+                        ),
+                        _littleSamplePhoto(),
+                        _littleSamplePhoto(),
+                        _littleSamplePhoto(),
+                        _littleSamplePhoto(),
+                        _littleSamplePhoto(),
+                      ],
+                    ),
+                  ),
+                ),
+                _itemInfo(),
+                SizedBox(
+                  height: 38.0,
+                ),
+                Row(
+                  children: [
+                    Container(
+                        margin: const EdgeInsets.only(left: 17.0, right: 8.0),
+                        child: Image.asset('assets/images/delivery_car.png')),
+                    Text('This seller usually ships within 2 days.'),
+                  ],
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 17.0, right: 17.0, top: 10.0),
+                  child: Row(
+                    children: [
+                      Center(
+                          child: SmoothStarRating(
+                        color: Colors.yellow,
+                        borderColor: Colors.yellow,
+                        rating: rating,
+                        isReadOnly: false,
+                        size: 20,
+                        filledIconData: Icons.star,
+                        halfFilledIconData: Icons.star_half,
+                        defaultIconData: Icons.star_border,
+                        starCount:
+                            Constants.productSlugModel.product.ratingCount,
+                        allowHalfRating: true,
+                        spacing: 2.0,
+                        onRated: (value) {
+                          print("rating value -> $value");
+                          // print("rating value dd -> ${value.truncate()}");
+                        },
+                      )),
+                      Text('(${Constants.productSlugModel.product.starCount})'),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 17.0, right: 17.0),
+                  child: Row(
+                    children: [
+                      Text('Size'),
+                      Spacer(),
+                      _itemSize(
+                        'XXL',
+                        xxl,
+                        func: () {
+                          setState(() {
+                            xxl = !xxl;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      _itemSize(
+                        'XL',
+                        xl,
+                        func: () {
+                          setState(() {
+                            xl = !xl;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      _itemSize(
+                        'M',
+                        m,
+                        func: () {
+                          setState(() {
+                            m = !m;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      _itemSize(
+                        'L',
+                        l,
+                        func: () {
+                          setState(() {
+                            l = !l;
+                          });
+                        },
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(
+                        left: 17.0, right: 12.0, top: 25.0),
+                    child: Row(
+                      children: [
+                        Text('Colors'),
+                        Spacer(),
+                        _selectColors(
+                          false,
+                          func: () {},
+                          color: Colors.grey,
+                        ),
+                        _selectColors(false, func: () {}, color: Colors.black),
+                        _selectColors(false,
+                            func: () {}, color: Color(0xFFB74FAF))
+                      ],
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 17.0, right: 17.0, top: 45.0, bottom: 8.0),
+                  child: SizedBox(
+                    width: ScreenSize.width,
+                    height: ScreenSize.height * 0.07,
+                    child: FlatButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          side: BorderSide(color: Colors.grey)),
+                      child: Text(
+                        'Expired',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w300),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+                Divider(
+                  thickness: 1.5,
+                ),
+                SizedBox(
+                  height: 12.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    topShortSummary(number: '46%', title: 'SAVED'),
+                    topShortSummary(number: '00:00:00', title: 'TIME\'SUP'),
+                    topShortSummary(number: '2', title: 'SOLD'),
+                  ],
+                ),
+                SizedBox(
+                  height: 12.0,
+                ),
+                Divider(
+                  thickness: 1.5,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 17.0),
+                      child: Text('Sold By'),
+                    )),
+                Container(
+                  margin: EdgeInsets.only(left: 2.0, right: 17.0, top: 13.0),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(0),
+                    leading: CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Color(0xFF8589F7),
+                    ),
+                    title: Text(
+                        '${Constants.productSlugModel.product.seller.name}'),
+                    subtitle: Row(
+                      children: [
+                        Center(
+                            child: SmoothStarRating(
+                          rating: rating,
+                          isReadOnly: false,
+                          size: 20,
+                          color: Colors.yellow,
+                          borderColor: Colors.yellow,
+                          filledIconData: Icons.star,
+                          halfFilledIconData: Icons.star_half,
+                          defaultIconData: Icons.star_border,
+                          starCount: 5,
+                          allowHalfRating: true,
+                          spacing: 2.0,
+                          onRated: (value) {
+                            print("rating value -> $value");
+                            // print("rating value dd -> ${value.truncate()}");
+                          },
+                        )),
+                        Text(
+                            '(${Constants.productSlugModel.product.seller.ratingCount})'),
+                      ],
+                    ),
+                    trailing: Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Icon(Icons.keyboard_arrow_right)),
+                  ),
+                ),
+                Divider(
+                  thickness: 1.5,
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 17.0),
+                      child: Text('Fit Details'),
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+                _bulletPoints('100% Cotton'),
+                SizedBox(
+                  height: 10,
+                ),
+                _bulletPoints('Total Body Length: Approx 25\"'),
+                SizedBox(
+                  height: 20,
+                ),
+                Divider(
+                  thickness: _productTile ? 0 : 1.5,
+                ),
+                _expandedTitle(
+                    title: 'Product Description',
+                    func: (value) {
+                      setState(() {
+                        if (_productTile) {
+                          _productTile = false;
+                        } else {
+                          _productTile = true;
+                        }
+                      });
+                    }),
+                Divider(
+                  thickness: _productTile
+                      ? 0
+                      : _shippingTile
+                          ? 0
+                          : 1.5,
+                ),
+                _expandedTitle(
+                    title: 'Shipping',
+                    func: (value) {
+                      setState(() {
+                        if (_shippingTile) {
+                          _shippingTile = false;
+                        } else {
+                          _shippingTile = true;
+                        }
+                      });
+                    }),
+                Divider(
+                  thickness: _shippingTile
+                      ? 0
+                      : _reviewsTile
+                          ? 0
+                          : 1.5,
+                ),
+                ExpansionTile(
+                  onExpansionChanged: (value) {
+                    if (_reviewsTile) {
+                      _reviewsTile = false;
+                    } else {
+                      _reviewsTile = true;
+                    }
+                  },
+                  tilePadding: EdgeInsets.only(right: 17.0, left: 17.0),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Product Reviews'),
+                      Row(
+                        children: [
+                          Center(
+                              child: SmoothStarRating(
+                            rating: rating,
+                            isReadOnly: false,
+                            size: 20,
+                            color: Colors.yellow,
+                            borderColor: Colors.yellow,
+                            filledIconData: Icons.star,
+                            halfFilledIconData: Icons.star_half,
+                            defaultIconData: Icons.star_border,
+                            starCount: 5,
+                            allowHalfRating: true,
+                            spacing: 2.0,
+                            onRated: (value) {
+                              print("rating value -> $value");
+                              // print("rating value dd -> ${value.truncate()}");
+                            },
+                          )),
+                          Text(
+                            '4.9',
+                            style: TextStyle(fontWeight: FontWeight.w800),
+                          ),
+                          Text('(${Constants.productSlugModel.ratingCount})'),
+                        ],
+                      ),
+                    ],
+                  ),
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(
+                          left: 17.0, right: 50.0, bottom: 20.0),
+                      child: Text(
+                          'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: _reviewsTile ? 0 : 1.5,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20, left: 17.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Customers Also Liked',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
                   height: 25,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Text('1 of 15'),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 17.0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => StoreProfile()),
-                      );
-                    },
-                    child: _littleSamplePhoto(),
-                  ),
-                  _littleSamplePhoto(),
-                  _littleSamplePhoto(),
-                  _littleSamplePhoto(),
-                  _littleSamplePhoto(),
-                  _littleSamplePhoto(),
-                ],
-              ),
-            ),
-          ),
-          _itemInfo(),
-          SizedBox(
-            height: 38.0,
-          ),
-          Row(
-            children: [
-              Container(
-                  margin: const EdgeInsets.only(left: 17.0, right: 8.0),
-                  child: Image.asset('assets/images/delivery_car.png')),
-              Text('This seller usually ships within 2 days.'),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 17.0, right: 17.0, top: 10.0),
-            child: Row(
-              children: [
-                Center(
-                    child: SmoothStarRating(
-                  color: Colors.yellow,
-                  borderColor: Colors.yellow,
-                  rating: rating,
-                  isReadOnly: false,
-                  size: 20,
-                  filledIconData: Icons.star,
-                  halfFilledIconData: Icons.star_half,
-                  defaultIconData: Icons.star_border,
-                  starCount: 5,
-                  allowHalfRating: true,
-                  spacing: 2.0,
-                  onRated: (value) {
-                    print("rating value -> $value");
-                    // print("rating value dd -> ${value.truncate()}");
-                  },
-                )),
-                Text('(120)'),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 17.0, right: 17.0),
-            child: Row(
-              children: [
-                Text('Size'),
-                Spacer(),
-                _itemSize(
-                  'XXL',
-                  xxl,
-                  func: () {
-                    setState(() {
-                      xxl = !xxl;
-                    });
-                  },
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                      children: List.generate(5, (index) {
+                    return Container(
+                      margin: EdgeInsets.only(left: 17.0),
+                      height: 160,
+                      width: 180,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    );
+                  })),
                 ),
                 SizedBox(
-                  width: 10,
-                ),
-                _itemSize(
-                  'XL',
-                  xl,
-                  func: () {
-                    setState(() {
-                      xl = !xl;
-                    });
-                  },
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                _itemSize(
-                  'M',
-                  m,
-                  func: () {
-                    setState(() {
-                      m = !m;
-                    });
-                  },
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                _itemSize(
-                  'L',
-                  l,
-                  func: () {
-                    setState(() {
-                      l = !l;
-                    });
-                  },
+                  height: 15.0,
                 )
               ],
             ),
-          ),
-          Padding(
-              padding:
-                  const EdgeInsets.only(left: 17.0, right: 12.0, top: 25.0),
-              child: Row(
-                children: [
-                  Text('Colors'),
-                  Spacer(),
-                  _selectColors(
-                    false,
-                    func: () {},
-                    color: Colors.grey,
-                  ),
-                  _selectColors(false, func: () {}, color: Colors.black),
-                  _selectColors(false, func: () {}, color: Color(0xFFB74FAF))
-                ],
-              )),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: 17.0, right: 17.0, top: 45.0, bottom: 8.0),
-            child: SizedBox(
-              width: ScreenSize.width,
-              height: ScreenSize.height * 0.07,
-              child: FlatButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    side: BorderSide(color: Colors.grey)),
-                child: Text(
-                  'Expired',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w300),
-                ),
-                onPressed: () {},
-              ),
-            ),
-          ),
-          Divider(
-            thickness: 1.5,
-          ),
-          SizedBox(
-            height: 12.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              topShortSummary(number: '46%', title: 'SAVED'),
-              topShortSummary(number: '00:00:00', title: 'TIME\'SUP'),
-              topShortSummary(number: '2', title: 'SOLD'),
-            ],
-          ),
-          SizedBox(
-            height: 12.0,
-          ),
-          Divider(
-            thickness: 1.5,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 17.0),
-                child: Text('Sold By'),
-              )),
-          Container(
-            margin: EdgeInsets.only(left: 2.0, right: 17.0, top: 13.0),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(0),
-              leading: CircleAvatar(
-                radius: 40,
-                backgroundColor: Color(0xFF8589F7),
-              ),
-              title: Text('Little Price Culture'),
-              subtitle: Row(
-                children: [
-                  Center(
-                      child: SmoothStarRating(
-                    rating: rating,
-                    isReadOnly: false,
-                    size: 20,
-                    color: Colors.yellow,
-                    borderColor: Colors.yellow,
-                    filledIconData: Icons.star,
-                    halfFilledIconData: Icons.star_half,
-                    defaultIconData: Icons.star_border,
-                    starCount: 5,
-                    allowHalfRating: true,
-                    spacing: 2.0,
-                    onRated: (value) {
-                      print("rating value -> $value");
-                      // print("rating value dd -> ${value.truncate()}");
-                    },
-                  )),
-                  Text('(120)'),
-                ],
-              ),
-              trailing: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Icon(Icons.keyboard_arrow_right)),
-            ),
-          ),
-          Divider(
-            thickness: 1.5,
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 17.0),
-                child: Text('Fit Details'),
-              )),
-          SizedBox(
-            height: 20,
-          ),
-          _bulletPoints('100% Cotton'),
-          SizedBox(
-            height: 10,
-          ),
-          _bulletPoints('Total Body Length: Approx 25\"'),
-          SizedBox(
-            height: 20,
-          ),
-          Divider(
-            thickness: _productTile ? 0 : 1.5,
-          ),
-          _expandedTitle(
-              title: 'Product Description',
-              func: (value) {
-                setState(() {
-                  if (_productTile) {
-                    _productTile = false;
-                  } else {
-                    _productTile = true;
-                  }
-                });
-              }),
-          Divider(
-            thickness: _productTile
-                ? 0
-                : _shippingTile
-                    ? 0
-                    : 1.5,
-          ),
-          _expandedTitle(
-              title: 'Shipping',
-              func: (value) {
-                setState(() {
-                  if (_shippingTile) {
-                    _shippingTile = false;
-                  } else {
-                    _shippingTile = true;
-                  }
-                });
-              }),
-          Divider(
-            thickness: _shippingTile
-                ? 0
-                : _reviewsTile
-                    ? 0
-                    : 1.5,
-          ),
-          ExpansionTile(
-            onExpansionChanged: (value) {
-              if (_reviewsTile) {
-                _reviewsTile = false;
-              } else {
-                _reviewsTile = true;
-              }
-            },
-            tilePadding: EdgeInsets.only(right: 17.0, left: 17.0),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Product Reviews'),
-                Row(
-                  children: [
-                    Center(
-                        child: SmoothStarRating(
-                      rating: rating,
-                      isReadOnly: false,
-                      size: 20,
-                      color: Colors.yellow,
-                      borderColor: Colors.yellow,
-                      filledIconData: Icons.star,
-                      halfFilledIconData: Icons.star_half,
-                      defaultIconData: Icons.star_border,
-                      starCount: 5,
-                      allowHalfRating: true,
-                      spacing: 2.0,
-                      onRated: (value) {
-                        print("rating value -> $value");
-                        // print("rating value dd -> ${value.truncate()}");
-                      },
-                    )),
-                    Text(
-                      '4.9',
-                      style: TextStyle(fontWeight: FontWeight.w800),
-                    ),
-                    Text('(120)'),
-                  ],
-                ),
-              ],
-            ),
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 17.0, right: 50.0, bottom: 20.0),
-                child: Text(
-                    'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
-              ),
-            ],
-          ),
-          Divider(
-            thickness: _reviewsTile ? 0 : 1.5,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 20, left: 17.0),
-            child: Row(
-              children: [
-                Text(
-                  'Customers Also Liked',
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-                children: List.generate(5, (index) {
-              return Container(
-                margin: EdgeInsets.only(left: 17.0),
-                height: 160,
-                width: 180,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              );
-            })),
-          ),
-          SizedBox(
-            height: 15.0,
-          )
-        ],
-      ),
-    );
+          );
   }
 
   _expandedTitle({String title, Function func}) {
@@ -605,7 +651,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
           Row(
             children: [
               Text(
-                'Flexible Gym Pants',
+                Constants.productSlugModel.product.slug,
                 style: TextStyle(fontSize: 15),
               ),
               Spacer(),
@@ -629,7 +675,8 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                       SizedBox(
                         width: 5.w,
                       ),
-                      Text('503')
+                      Text(Constants.productSlugModel.product.favCount
+                          .toString())
                     ],
                   ),
                 ),
@@ -639,7 +686,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
           Row(
             children: [
               Text(
-                '\$14.51',
+                '\$${Constants.productSlugModel.product.salePrice}',
                 style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
               ),
               SizedBox(
@@ -648,7 +695,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
               Row(
                 children: [
                   Text(
-                    '\$8.23',
+                    '\$${Constants.productSlugModel.product.price}',
                     style: TextStyle(
                         decoration: TextDecoration.lineThrough, fontSize: 12),
                   ),
