@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/screens/blog/blog_screen.dart';
 import 'package:loovum_designs/ui/screens/home/home_tabs.dart';
 import 'package:loovum_designs/ui/screens/more/orderHistory1_Screen.dart';
+import 'package:loovum_designs/ui/screens/more/settings_screen.dart';
 import 'package:loovum_designs/ui/screens/search/search_page.dart';
 import 'package:loovum_designs/ui/screens/shoppingBag/shoppingBag_Screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
@@ -78,7 +79,7 @@ class _HomeState extends State<Home> {
           SearchPage(),
           BlogScreen(),
           ShoppingBagScreen(),
-          OrderHistory1(),
+          SettingsScreen(),
         ],
         controller: pageController,
         physics: NeverScrollableScrollPhysics(),

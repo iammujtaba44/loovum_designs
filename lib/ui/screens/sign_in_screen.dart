@@ -149,24 +149,24 @@ class _SignInScreenState extends State<SignInScreen> {
               width: ScreenSize.width * 0.85,
               child: RaisedButton(
                 child: Text(
-                  'SIGN UP',
+                  'SIGN IN',
                   style: TextStyle(color: Colors.white),
                 ),
                 color: Color(0xFFE6798A),
-                onPressed: () {
+                onPressed: () async {
                   if (emailController.text.isNotEmpty &&
                       passwordController.text.isNotEmpty) {
-                    bool result = GetMethods.loginInit(
+                    bool result = await GetMethods.loginInit(
                         email: emailController.text,
                         password: passwordController.text);
 
-                    if (result == true) {
+                    if (result) {
                       CustomToast(text: 'Login Successfully');
                       emailController.clear();
                       passwordController.clear();
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => Home()));
-                    } else
+                    } else if (!result)
                       CustomToast(text: 'Email or password is wrong');
                   } else
                     CustomToast(text: 'Please fill all fields');

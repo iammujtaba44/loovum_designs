@@ -2,45 +2,20 @@ import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/more/settings_screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(body: Center(child: OrderHistory1())),
-    );
-  }
-}
-
 class OrderHistory1 extends StatefulWidget {
+  var orderId;
+  var productId;
+  IconData icon;
+  OrderHistory1({this.orderId, this.productId, this.icon});
+
   @override
   State<StatefulWidget> createState() {
     return OrderHistory1State();
@@ -58,6 +33,7 @@ class OrderHistory1State extends State<OrderHistory1> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     var ScreenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -69,7 +45,10 @@ class OrderHistory1State extends State<OrderHistory1> {
             child: Column(
               children: [
                 appBar(height: 120.h, width: 750.w, title: '6-17-19'),
-                _listview(context)
+                _listview(context,
+                    orderId: widget.orderId,
+                    productId: widget.productId,
+                    icon: widget.icon)
               ],
             ),
           ),
@@ -79,8 +58,11 @@ class OrderHistory1State extends State<OrderHistory1> {
   }
 }
 
-_listview(BuildContext context) {
+_listview(BuildContext context, {int orderId, int productId, IconData icon}) {
   var ScreenSize = MediaQuery.of(context).size;
+  String date = DateFormat("EEE, d MMM yyyy HH:mm:ss")
+      .format(Constants.ordersModel[orderId].createdAt);
+  var datef = date.split(' ');
   return Column(
     children: [
       Container(
@@ -103,12 +85,12 @@ _listview(BuildContext context) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Jun 17, 2019",
+                    '${datef[2]}, ${datef[1]} ${datef[3]}',
                     style: TextStyle(
                         fontSize: 30.0.w, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "23.27",
+                    "\$${Constants.ordersModel[orderId].totalAmount}",
                     style: TextStyle(
                         fontSize: 30.0.w, fontWeight: FontWeight.bold),
                   ),
@@ -136,11 +118,11 @@ _listview(BuildContext context) {
                                   decoration: BoxDecoration(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(5)),
-                                    color: Colors.black,
+                                    color: Colors.grey,
                                   ),
                                 ),
                                 title: Text(
-                                  'Flexible Gym Pants| Grey',
+                                  '${Constants.ordersModel[orderId].products[productId].product.title}',
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                                 trailing:
@@ -156,30 +138,37 @@ _listview(BuildContext context) {
                   left: 70,
                   top: 1,
                   child: Container(
-                    height: 22,
-                    width: 22,
-                    decoration: BoxDecoration(
-                        color: Colors.pink,
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                  ),
+                      height: 22,
+                      width: 22,
+                      decoration: BoxDecoration(
+                          color: const Color(0xFFE6798A),
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      child: Center(
+                        child: Icon(
+                          icon,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                      )),
                 ),
               ],
             ),
             Container(
               child: pinkButton(
                   func: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Scaffold(body: Center(child: SettingsScreen()))),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           Scaffold(body: Center(child: SettingsScreen()))),
+                    // );
                   },
                   height: getScreenHeight(context) == 0
                       ? ScreenSize.height * 0.09
                       : ScreenSize.height * 0.065,
                   width: MediaQuery.of(context).size.width,
-                  title: "DELIVERED - Mon Jun 24"),
+                  title:
+                      "${Constants.ordersModel[orderId].products[productId].status} - ${datef[0]} ${datef[2]} ${datef[1]}"),
             )
           ],
         ),
@@ -230,7 +219,7 @@ _listview(BuildContext context) {
                         color: Colors.grey,
                         fontSize: 30.0.w)),
                 Text(
-                  '87246823746',
+                  '${Constants.ordersModel[orderId].products[productId].orderId}',
                   style: TextStyle(fontWeight: FontWeight.w400),
                 )
               ],
@@ -289,7 +278,7 @@ _listview(BuildContext context) {
                         color: Colors.grey,
                         fontSize: 25.0.w)),
                 Text(
-                  '14.1',
+                  '\$${Constants.ordersModel[orderId].products[productId].price}',
                   style: TextStyle(fontWeight: FontWeight.w500),
                 )
               ],
@@ -303,7 +292,7 @@ _listview(BuildContext context) {
                         color: Colors.grey,
                         fontSize: 25.0.w)),
                 Text(
-                  '0.00',
+                  '\$${Constants.ordersModel[orderId].products[productId].shippingCharge}',
                   style: TextStyle(fontWeight: FontWeight.w500),
                 )
               ],
@@ -317,7 +306,7 @@ _listview(BuildContext context) {
                         color: Colors.black,
                         fontSize: 30.0.w)),
                 Text(
-                  '18.25',
+                  '\$${Constants.ordersModel[orderId].totalAmount}',
                   style: TextStyle(fontWeight: FontWeight.w700),
                 )
               ],

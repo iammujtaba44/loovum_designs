@@ -8,7 +8,10 @@ import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/models/RegisterModel.dart';
 import 'package:loovum_designs/services/models/RequiredModel.dart';
 import 'package:loovum_designs/services/models/UserModel.dart';
+import 'package:loovum_designs/services/models/blog/BlogCatModel.dart';
+import 'package:loovum_designs/services/models/blog/BlogRequiredModel.dart';
 import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
+import 'package:loovum_designs/services/models/more/orderModel.dart';
 import 'package:loovum_designs/services/models/search/CollectionModel.dart';
 import 'package:loovum_designs/services/models/search/EndingSoon.dart';
 import 'package:loovum_designs/services/models/search/PopularModel.dart';
@@ -53,9 +56,51 @@ class RequestServices {
     }
   }
 
-  // This is method has to be implemented with a slug
-  // but for now it's implemented without slug
-  // right now it's hard-coded.
+  //Blog required
+  static Future<BlogRequiredModel> blogRequired() async {
+    var response = await http.get(BlogRequiredUrl);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      //  print(map);
+      return blogRequiredModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  //Blog Cat
+  static Future<BlogCatModel> blogcat({String slug}) async {
+    var response = await http.get(BlogCatUrl + slug);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      //  print(map);
+      return blogCatModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  //Order
+
+  static Future<List<OrdersModel>> order() async {
+    var response = await http.get(OrderUrl,
+        headers: {'Authorization': 'Bearer ${Constants.loginModel.token}'});
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      //  print(map);
+      return ordersModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+//Slug done
 
   static Future<ProductSlugModel> productSlug({String slug}) async {
     var response = await http.get(ProductSlugUrl + slug, //"mesh-v-neck-tee",
@@ -63,7 +108,7 @@ class RequestServices {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;
-      print(map);
+      // print(map);
       return productSlugModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
