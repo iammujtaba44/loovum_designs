@@ -7,6 +7,7 @@ import 'package:loovum_designs/services/requestServices/RequestServices.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/sneak_peeks/sneak_peeks_dialog.dart';
+import 'package:loovum_designs/ui/screens/home/store_profile/home_store_profile.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 
@@ -117,14 +118,8 @@ class _SneakPeeksPageState extends State<SneakPeeksPage> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Scaffold(
-                                                body: ListView(
-                                                    physics:
-                                                        BouncingScrollPhysics(),
-                                                    padding: EdgeInsets.all(0),
-                                                    children: [
-                                                  ExpiredProductPage()
-                                                ])),
+                                            builder: (context) =>
+                                                StoreProfile(),
                                           ));
 
                                       //   showDialog(

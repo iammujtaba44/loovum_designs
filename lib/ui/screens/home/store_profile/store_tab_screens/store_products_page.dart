@@ -1,6 +1,9 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/models/home/seller/SellerProductModel.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 
 void main() {
@@ -41,15 +44,41 @@ class StoreProductsPage extends StatefulWidget {
 }
 
 class _StoreProductsPageState extends State<StoreProductsPage> {
+  bool hasData = false;
+
+  getData() async {
+    bool result = await GetMethods.sellerProductInit();
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
-    return ListView(
+    return ListView.builder(
       padding: EdgeInsets.all(0),
-      children: [
-        _item(),
-        _item(),
-      ],
+      itemCount: Constants.sellerProductModel.data.length,
+      itemBuilder: (context, index) {
+        return _item(Constants.sellerProductModel.data[index]);
+      },
     );
   }
 
@@ -122,7 +151,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
     );
   }
 
-  Padding _item() {
+  Padding _item(Datum data) {
     var ScreenSize = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(top: 35, right: 18, left: 18),
@@ -144,7 +173,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
           Row(
             children: [
               Text(
-                'Flexible gym sweat pants | S - XL',
+                data.title,
                 style: TextStyle(fontSize: 15.0),
               ),
               Spacer(),
@@ -159,7 +188,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                     width: 5.w,
                   ),
                   Text(
-                    '503',
+                    data.favCount.toString(),
                     style: TextStyle(color: Colors.grey),
                   )
                 ],
@@ -174,7 +203,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
             child: Row(
               children: [
                 Text(
-                  '\$14.51',
+                  '\$${data.salePrice}',
                   style: TextStyle(color: Color(0xFFE6798A), fontSize: 15.0),
                 ),
                 SizedBox(
@@ -183,7 +212,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                 Row(
                   children: [
                     Text(
-                      '\$8.23',
+                      '\$${data.price}',
                       style: TextStyle(
                           decoration: TextDecoration.lineThrough,
                           fontSize: 13.0),
@@ -191,20 +220,23 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
                     SizedBox(
                       width: 10.w,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 8.0, right: 8.0, top: 2, bottom: 2),
-                        child: Text(
-                          'FREE SHIPPING',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                    ),
+                    data.shippingAndReturns != null
+                        ? Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 8.0, right: 8.0, top: 2, bottom: 2),
+                              child: Text(
+                                'FREE SHIPPING',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          )
+                        : Container(),
                   ],
                 ),
               ],

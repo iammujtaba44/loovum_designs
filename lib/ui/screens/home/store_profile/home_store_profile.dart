@@ -1,6 +1,9 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/favourites_page.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/products_page.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/sneak_peeks/sneak_peeks_page.dart';
@@ -49,101 +52,140 @@ class StoreProfile extends StatefulWidget {
 }
 
 class _StoreProfileState extends State<StoreProfile> {
+  bool hasData = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    bool result = await GetMethods.sellerInit();
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    var ScreenSize = MediaQuery.of(context).size;
     ScreenUtil.init(context, width: 750, height: 1334);
-    return SafeArea(
-      child: DefaultTabController(
-        initialIndex: 0,
-        length: 3,
-        child: Scaffold(
-          body: Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                appBar(height: 120.h, width: 750.w, title: 'Seller Profile'),
-                SizedBox(
-                  height: 20,
-                ),
-                Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.black,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'Loovum Clothing',
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text('SanFransisco, CA',
-                        style: TextStyle(color: Colors.grey)),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                            child: SmoothStarRating(
-                          rating: 3,
-                          isReadOnly: false,
-                          size: 20,
-                          color: Colors.yellow,
-                          borderColor: Colors.yellow,
-                          filledIconData: Icons.star,
-                          halfFilledIconData: Icons.star_half,
-                          defaultIconData: Icons.star_border,
-                          starCount: 5,
-                          allowHalfRating: true,
-                          spacing: 2.0,
-                          onRated: (value) {
-                            print("rating value -> $value");
-                            // print("rating value dd -> ${value.truncate()}");
-                          },
-                        )),
-                        Text(' (120)'),
-                        Text(' reviews')
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(height: 13.0),
-                Divider(
-                  thickness: 1.5,
-                ),
-                TabBar(
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.grey[400],
-                  indicatorColor: Colors.grey,
-                  tabs: [
-                    Tab(
-                        child: Text(
-                      'Products',
-                    )),
-                    Tab(child: Text('Reviews')),
-                    Tab(child: Text('About')),
-                  ],
-                ),
-                Expanded(
-                  child: TabBarView(
+    return !hasData
+        ? Container(
+            height: ScreenSize.height > 650 && ScreenSize.height < 750
+                ? 350.h
+                : 300.h,
+            child: Center(
+              child: SpinKitFadingFour(
+                color: const Color(0xFFE6798A),
+                size: 50.0,
+              ),
+            ),
+          )
+        : SafeArea(
+            child: DefaultTabController(
+              initialIndex: 0,
+              length: 3,
+              child: Scaffold(
+                body: Container(
+                  color: Colors.white,
+                  child: Column(
                     children: [
-                      StoreProductsPage(),
-                      StoreReviewsPage(),
-                      StoreAboutPage(),
+                      appBar(
+                          height: 120.h, width: 750.w, title: 'Seller Profile'),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.black,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            Constants.sellerModel.name,
+                            style: TextStyle(fontSize: 18.0),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(Constants.sellerModel.location,
+                              style: TextStyle(color: Colors.grey)),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                  child: SmoothStarRating(
+                                rating: 3,
+                                isReadOnly: false,
+                                size: 20,
+                                color: Colors.yellow,
+                                borderColor: Colors.yellow,
+                                filledIconData: Icons.star,
+                                halfFilledIconData: Icons.star_half,
+                                defaultIconData: Icons.star_border,
+                                starCount: 5,
+                                allowHalfRating: true,
+                                spacing: 2.0,
+                                onRated: (value) {
+                                  print("rating value -> $value");
+                                  // print("rating value dd -> ${value.truncate()}");
+                                },
+                              )),
+                              Text(' (${Constants.sellerModel.ratingCount})'),
+                              Text(' reviews')
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 13.0),
+                      Divider(
+                        thickness: 1.5,
+                      ),
+                      TabBar(
+                        labelColor: Colors.black,
+                        unselectedLabelColor: Colors.grey[400],
+                        indicatorColor: Colors.grey,
+                        tabs: [
+                          Tab(
+                              child: Text(
+                            'Products',
+                          )),
+                          Tab(child: Text('Reviews')),
+                          Tab(child: Text('About')),
+                        ],
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          children: [
+                            StoreProductsPage(),
+                            StoreReviewsPage(),
+                            StoreAboutPage(),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
   }
 }

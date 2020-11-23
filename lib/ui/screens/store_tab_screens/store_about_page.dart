@@ -1,6 +1,7 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/store_rating.dart';
 
@@ -90,7 +91,7 @@ class _StoreAboutPageState extends State<StoreAboutPage> {
                   height: 10.h,
                 ),
                 Text(
-                  'Lorem ipsum dolor sit amet, consetetur sadispscing elitr, sed diam nonumy eimod tempor invidunt ut labore et dolore.',
+                  Constants.sellerModel.about,
                   style: TextStyle(fontSize: 12, color: Colors.grey[700]),
                 )
               ],

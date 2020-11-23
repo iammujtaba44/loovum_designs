@@ -1,6 +1,8 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/store_rating.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -43,6 +45,32 @@ class StoreReviewsPage extends StatefulWidget {
 }
 
 class _StoreReviewsPageState extends State<StoreReviewsPage> {
+  bool hasData;
+
+  getData() async {
+    bool result = await GetMethods.sellerReviewProduct();
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -51,11 +79,23 @@ class _StoreReviewsPageState extends State<StoreReviewsPage> {
           SizedBox(
             height: 20.0,
           ),
-          storeRatingWidget(context, type: '5 star', numOfRates: '23k'),
-          storeRatingWidget(context, type: '4 star', numOfRates: '5.1k'),
-          storeRatingWidget(context, type: '3 star', numOfRates: '1.8k'),
-          storeRatingWidget(context, type: '2 star', numOfRates: '896'),
-          storeRatingWidget(context, type: '1 star', numOfRates: '1.2k'),
+          storeRatingWidget(
+            context,
+            type: '5 star',
+            numOfRates: Constants.sellerModel.starFive.toString(),
+          ),
+          storeRatingWidget(context,
+              type: '4 star',
+              numOfRates: Constants.sellerModel.starFour.toString()),
+          storeRatingWidget(context,
+              type: '3 star',
+              numOfRates: Constants.sellerModel.starThree.toString()),
+          storeRatingWidget(context,
+              type: '2 star',
+              numOfRates: Constants.sellerModel.starTwo.toString()),
+          storeRatingWidget(context,
+              type: '1 star',
+              numOfRates: Constants.sellerModel.starOne.toString()),
           SizedBox(
             height: 10.0,
           ),
@@ -71,7 +111,8 @@ class _StoreReviewsPageState extends State<StoreReviewsPage> {
   _reviwContainer() {
     return SingleChildScrollView(
       child: Column(
-          children: List.generate(4, (index) {
+          children:
+              List.generate(Constants.sellerReviewModel.rating.length, (index) {
         return Column(
           children: [
             ListTile(
@@ -87,9 +128,10 @@ class _StoreReviewsPageState extends State<StoreReviewsPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Samuel Smith'),
+                    Text(Constants.sellerReviewModel.rating[index].name),
                     SmoothStarRating(
-                      rating: 3,
+                      rating: Constants.sellerReviewModel.rating[index].stars
+                          .toDouble(),
                       isReadOnly: false,
                       size: 20,
                       color: Colors.yellow,
@@ -107,7 +149,8 @@ class _StoreReviewsPageState extends State<StoreReviewsPage> {
                     )
                   ]),
               trailing: Text(
-                '1 hour ago',
+                Constants.sellerReviewModel.rating[index].createdAt
+                    .toIso8601String(),
                 style: TextStyle(fontSize: 10),
               ),
             ),
@@ -121,7 +164,7 @@ class _StoreReviewsPageState extends State<StoreReviewsPage> {
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
               child: Text(
-                'Lorem ipsum dolor sit amet, consetetur sadispscing elitr, sed diam nonumy eimod tempor invidunt ut labore et dolore.',
+                Constants.sellerReviewModel.rating[index].feedback,
                 style: TextStyle(fontSize: 12),
               ),
             ),

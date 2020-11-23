@@ -11,3 +11,4 @@ const String CollectionUrl = BaseUrl + "collections/";
 const String EndingSoonUrl = BaseUrl + "ending-soon/";
 const String FavouriteCountUrl = BaseUrl + "favourite-count";
 const String ProductSlugUrl = BaseUrl + "product/";
+const String SellerUrl = BaseUrl + "seller/";

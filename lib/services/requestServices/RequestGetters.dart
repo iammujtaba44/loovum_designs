@@ -26,6 +26,36 @@ class GetMethods {
     }
   }
 
+  static Future<bool> sellerInit() async {
+    Constants.sellerModel = await RequestServices.sellerDetails();
+
+    if (Constants.sellerModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> sellerProductInit() async {
+    Constants.sellerProductModel = await RequestServices.sellerProducts();
+
+    if (Constants.sellerProductModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> sellerReviewProduct() async {
+    Constants.sellerReviewModel = await RequestServices.sellerReviews();
+
+    if (Constants.sellerReviewModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   //Popular Init
   static Future<bool> popularInit() async {
     Constants.popularModel = await RequestServices.popular();

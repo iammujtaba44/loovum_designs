@@ -11,18 +11,42 @@ storeRatingWidget(BuildContext context, {String type, String numOfRates}) {
       //  mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(type),
-        SizedBox(width: 10.0),
-        Stack(
-          children: [
-            Container(
-                height: 30.h,
-                width: ScreenSize.width * 0.7,
-                color: Colors.grey[300]),
-            Container(height: 30.h, width: 300.w, color: Color(0xFFE6798A)),
-          ],
+        SizedBox(width: 5.0),
+        Expanded(
+          flex: 7,
+          child: Stack(
+            children: [
+              Container(
+                  height: 30.h,
+                  width: ScreenSize.width * 0.7,
+                  color: Colors.grey[300]),
+              Container(
+                  height: 30.h,
+                  width: (int.parse(numOfRates) / 10).w,
+                  color: Color(0xFFE6798A)),
+            ],
+          ),
         ),
-        SizedBox(width: 10.0),
-        Text(numOfRates),
+        SizedBox(width: 5.0),
+        int.parse(numOfRates) > 1000
+            ? Text((double.parse(numOfRates) / 1000)
+                    .toStringAsFixed(1)
+                    .toString() +
+                "K")
+            : Text(numOfRates),
+        // Text(type),
+        // SizedBox(width: 10.0),
+        // Stack(
+        //   children: [
+        //     Container(
+        //         height: 30.h,
+        //         width: ScreenSize.width * 0.7,
+        //         color: Colors.grey[300]),
+        //     Container(height: 30.h, width: 300.w, color: Color(0xFFE6798A)),
+        //   ],
+        // ),
+        // SizedBox(width: 10.0),
+        // Text(numOfRates),
       ],
     ),
   );
