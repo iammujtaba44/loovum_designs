@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loovum_designs/services/models/blog/BlogCatModel.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
+import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/roundedButton.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
+import 'package:http/http.dart' as http;
 
 class BlogScreen extends StatefulWidget {
   @override
@@ -23,6 +30,72 @@ class BlogScreenState extends State<BlogScreen> {
     ..add("The 5 Best Exercises To Do If You \nAre Feeling Lazy")
     ..add("Free Downloadable Tech \nBackgrounds For 2020!")
     ..add("5 Lessons I have learned From \nTravelling Alone.s");
+  List data;
+  bool hasData = false;
+  bool hasDataCat = false;
+  bool hasDataCat1 = false;
+  getData() async {
+    var response =
+        await http.get('https://api.scentpeeks.com/api/blog/homepage');
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      //print(jsonDecode(map)['welcomePosts'].length);
+
+      if (mounted) {
+        setState(() {
+          data = jsonDecode(map)['welcomePosts'];
+          // hasData = true;
+        });
+      }
+
+      // print(data[0]['category_name']);
+      // Map d = data[0];
+      //  print(d);
+      // return ordersModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  getBlogList() async {
+    bool result = await GetMethods.blogRequiredInit();
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
+
+  getDataCat({String slug}) async {
+    bool result = await GetMethods.blogCatInit(slug: slug);
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasDataCat1 = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasDataCat1 = false;
+      });
+    }
+  }
+
+  void initState() {
+    super.initState();
+    getBlogList();
+    getData();
+  }
 
   Widget build(BuildContext context) {
     var ScreenSize = MediaQuery.of(context).size;
@@ -38,8 +111,39 @@ class BlogScreenState extends State<BlogScreen> {
                   width: ScreenSize.width,
                   height: ScreenSize.height * 0.17,
                   title: "Blog"),
-              _horizList(),
-              _bodyList(),
+              !hasData
+                  ? Container(
+                      margin: EdgeInsets.all(17.0),
+                      child: Center(
+                        child: SpinKitFadingFour(
+                          color: const Color(0xFFE6798A),
+                          size: 50.0,
+                        ),
+                      ))
+                  : _horizList(),
+              data == null
+                  ? Container(
+                      margin: EdgeInsets.all(17.0),
+                      height: ScreenSize.height * 0.57,
+                      child: Center(
+                        child: SpinKitFadingFour(
+                          color: const Color(0xFFE6798A),
+                          size: 50.0,
+                        ),
+                      ))
+                  : !hasDataCat
+                      ? _bodyList()
+                      : !hasDataCat1
+                          ? Container(
+                              margin: EdgeInsets.all(17.0),
+                              height: ScreenSize.height * 0.57,
+                              child: Center(
+                                child: SpinKitFadingFour(
+                                  color: const Color(0xFFE6798A),
+                                  size: 50.0,
+                                ),
+                              ))
+                          : _bodyCatList(),
               _container(),
               _textContainer("6 Ways To Dye Cloths At Home"),
               _container(),
@@ -48,7 +152,7 @@ class BlogScreenState extends State<BlogScreen> {
               _gridViewContainer(),
               _hugeContainer(),
               _getDeviderText("LATEST STORIES"),
-              _bodyList(),
+              //  _bodyList(),
             ],
           ),
         ),
@@ -66,10 +170,129 @@ class BlogScreenState extends State<BlogScreen> {
   _bodyList() {
     return SingleChildScrollView(
         child: Column(
-      children: List.generate(_labels.length, (index) {
-        return _bodyContainer(_labels[index], _body[index]);
+      children: List.generate(data.length, (index) {
+        return _bodyContainer(datum: data[index]);
       }),
     ));
+  }
+
+  _bodyContainer({Map datum}) {
+    var ScreenSize = MediaQuery.of(context).size;
+    MediaQueryData device = MediaQuery.of(context);
+    return Container(
+        margin: EdgeInsets.all(17.0),
+        height: ScreenSize.height * 0.57,
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+            color: const Color(0xFFF8F8F8),
+            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        //   border: Border.all(color: Colors.grey)),
+        child: Stack(
+          children: [
+            Column(children: [
+              Container(
+                //  margin:  EdgeInsets.all(10.0),
+                height: ScreenSize.height * 0.45,
+
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+              ),
+              SizedBox(
+                height: ScreenSize.height * 0.04,
+              ),
+              Text(
+                datum['title'],
+                style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: device.textScaleFactor * 16),
+                textAlign: TextAlign.center,
+              )
+            ]),
+            Padding(
+                padding: EdgeInsets.only(top: ScreenSize.height * 0.33),
+                child: Center(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 7.0, horizontal: 30.0),
+                        color: const Color(0xFFFDD0D7),
+                        child: Text(datum['category_name'],
+                            style: TextStyle(fontWeight: FontWeight.w400))))),
+          ],
+        ));
+  }
+
+  _bodyCatList() {
+    return SingleChildScrollView(
+        child: Column(
+      children:
+          List.generate(Constants.blogCatModel.posts.data.length, (index) {
+        return _bodyContainerCat(
+            datum: Constants.blogCatModel.posts.data[index]);
+      }),
+    ));
+  }
+
+  _bodyContainerCat({CatData datum}) {
+    var ScreenSize = MediaQuery.of(context).size;
+    MediaQueryData device = MediaQuery.of(context);
+    return Container(
+        margin: EdgeInsets.all(17.0),
+        height: ScreenSize.height * 0.57,
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 0,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+            color: const Color(0xFFF8F8F8),
+            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+        //   border: Border.all(color: Colors.grey)),
+        child: Stack(
+          children: [
+            Column(children: [
+              Container(
+                //  margin:  EdgeInsets.all(10.0),
+                height: ScreenSize.height * 0.45,
+
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+              ),
+              SizedBox(
+                height: ScreenSize.height * 0.04,
+              ),
+              Text(
+                datum.title,
+                style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: device.textScaleFactor * 16),
+                textAlign: TextAlign.center,
+              )
+            ]),
+            Padding(
+                padding: EdgeInsets.only(top: ScreenSize.height * 0.33),
+                child: Center(
+                    child: Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 7.0, horizontal: 30.0),
+                        color: const Color(0xFFFDD0D7),
+                        child: Text(datum.categoryName,
+                            style: TextStyle(fontWeight: FontWeight.w400))))),
+          ],
+        ));
   }
 
   _hugeContainer() {
@@ -257,28 +480,59 @@ class BlogScreenState extends State<BlogScreen> {
     );
   }
 
+  var selectedbtn;
   _horizList() {
     var ScreenSize = MediaQuery.of(context).size;
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: List.generate(_values.length, (index) {
-            return Container(
-              margin: index == 0
-                  ? const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 18.0)
-                  : const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 10.0),
-              // padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-              padding: const EdgeInsets.only(
-                  top: 15.0, bottom: 15.0, left: 32.0, right: 32.0),
-              alignment: Alignment.center,
-              //  width: ScreenSize.width * 0.37,
-              //  height: ScreenSize.height * 0.01,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  border: Border.all(color: Colors.grey)),
-              child: Text(
-                _values[index],
-                style: TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500),
+          children: List.generate(Constants.blogRequiredModel.categories.length,
+              (index) {
+            return InkWell(
+              onTap: () {
+                setState(() {
+                  if (selectedbtn == index) {
+                    selectedbtn = null;
+                    hasDataCat = false;
+                    hasDataCat1 = false;
+                    data = null;
+                    getData();
+                  } else {
+                    selectedbtn = index;
+                    hasDataCat1 = false;
+                    getDataCat(
+                        slug:
+                            Constants.blogRequiredModel.categories[index].slug);
+                    hasDataCat = true;
+                    // print(Constants.blogRequiredModel.categories[index].slug);
+                  }
+                });
+              },
+              child: Container(
+                margin: index == 0
+                    ? const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 18.0)
+                    : const EdgeInsets.only(
+                        top: 10.0, bottom: 10.0, left: 10.0),
+                // padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                padding: const EdgeInsets.only(
+                    top: 15.0, bottom: 15.0, left: 32.0, right: 32.0),
+                alignment: Alignment.center,
+                //  width: ScreenSize.width * 0.37,
+                //  height: ScreenSize.height * 0.01,
+                decoration: BoxDecoration(
+                    color: selectedbtn == index
+                        ? Color(0xFFE6798A)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    border: Border.all(color: Colors.grey)),
+                child: Text(
+                  Constants.blogRequiredModel.categories[index].name,
+                  style: TextStyle(
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.w500,
+                      color:
+                          selectedbtn == index ? Colors.white : Colors.black),
+                ),
               ),
             );
           }),
@@ -296,59 +550,5 @@ class BlogScreenState extends State<BlogScreen> {
           color: Colors.grey, //const Color(0xFFF8F8F8),
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
     );
-  }
-
-  _bodyContainer(String lable, String bodyText) {
-    var ScreenSize = MediaQuery.of(context).size;
-    MediaQueryData device = MediaQuery.of(context);
-    return Container(
-        margin: EdgeInsets.all(17.0),
-        height: ScreenSize.height * 0.57,
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 0,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
-            color: const Color(0xFFF8F8F8),
-            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        //   border: Border.all(color: Colors.grey)),
-        child: Stack(
-          children: [
-            Column(children: [
-              Container(
-                //  margin:  EdgeInsets.all(10.0),
-                height: ScreenSize.height * 0.45,
-
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-              ),
-              SizedBox(
-                height: ScreenSize.height * 0.04,
-              ),
-              Text(
-                bodyText,
-                style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: device.textScaleFactor * 16),
-                textAlign: TextAlign.center,
-              )
-            ]),
-            Padding(
-                padding: EdgeInsets.only(top: ScreenSize.height * 0.33),
-                child: Center(
-                    child: Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 7.0, horizontal: 30.0),
-                        color: const Color(0xFFFDD0D7),
-                        child: Text(lable,
-                            style: TextStyle(fontWeight: FontWeight.w400))))),
-          ],
-        ));
   }
 }

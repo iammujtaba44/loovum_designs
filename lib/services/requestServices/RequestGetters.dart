@@ -6,8 +6,38 @@ import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 
 class GetMethods {
-  static Future<bool> productSlugInit() async {
-    Constants.productSlugModel = await RequestServices.productSlug();
+  static Future<bool> blogCatInit({String slug}) async {
+    Constants.blogCatModel = await RequestServices.blogcat(slug: slug);
+
+    if (Constants.blogCatModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> blogRequiredInit() async {
+    Constants.blogRequiredModel = await RequestServices.blogRequired();
+
+    if (Constants.blogRequiredModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> orderInit() async {
+    Constants.ordersModel = await RequestServices.order();
+
+    if (Constants.ordersModel != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> productSlugInit({String slug}) async {
+    Constants.productSlugModel = await RequestServices.productSlug(slug: slug);
 
     if (Constants.productSlugModel != null) {
       return true;
@@ -128,10 +158,9 @@ class GetMethods {
       return false;
   }
 
-  static bool loginInit({String email, String password}) {
-    RequestServices.login(email: email, password: password).then((value) {
-      Constants.loginModel = value;
-    });
+  static Future<bool> loginInit({String email, String password}) async {
+    Constants.loginModel =
+        await RequestServices.login(email: email, password: password);
     if (Constants.loginModel != null) {
       if (Constants.loginModel.success == false) {
         return false;
@@ -139,7 +168,8 @@ class GetMethods {
         Constants.bearerToken = Constants.loginModel.token;
         return true;
       }
-    }
+    } else
+      return false;
   }
 
   static bool registerInit(

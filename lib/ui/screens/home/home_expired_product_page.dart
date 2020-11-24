@@ -1,5 +1,6 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
@@ -12,43 +13,9 @@ import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/top_summary.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(
-          body: ListView(
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.all(0),
-              children: [ExpiredProductPage()])),
-    );
-  }
-}
-
 class ExpiredProductPage extends StatefulWidget {
+  final String slug;
+  ExpiredProductPage({@required this.slug});
   @override
   _ExpiredProductPageState createState() => _ExpiredProductPageState();
 }
@@ -73,7 +40,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
   }
 
   getData() async {
-    bool result = await GetMethods.productSlugInit();
+    bool result = await GetMethods.productSlugInit(slug: widget.slug);
 
     if (result) {
       if (mounted) {
@@ -107,7 +74,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                 appBarWithIcon(
                     height: 120.h,
                     width: ScreenSize.width,
-                    title: Constants.productSlugModel.product.slug,
+                    title: Constants.productSlugModel.product.title,
                     iconbtn: IconButton(
                         icon: Icon(Icons.keyboard_arrow_left_sharp,
                             color: Colors.black),
@@ -201,20 +168,20 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                           child: SmoothStarRating(
                         color: Colors.yellow,
                         borderColor: Colors.yellow,
-                        rating: rating,
-                        isReadOnly: false,
+                        rating: Constants.productSlugModel.product.starCount /
+                            Constants.productSlugModel.product.ratingCount,
+                        isReadOnly: true,
                         size: 20,
                         filledIconData: Icons.star,
                         halfFilledIconData: Icons.star_half,
                         defaultIconData: Icons.star_border,
-                        starCount:
-                            Constants.productSlugModel.product.ratingCount,
+                        starCount: 5,
                         allowHalfRating: true,
                         spacing: 2.0,
-                        onRated: (value) {
-                          print("rating value -> $value");
-                          // print("rating value dd -> ${value.truncate()}");
-                        },
+                        // onRated: (value) {
+                        //   print("rating value -> $value");
+                        //   // print("rating value dd -> ${value.truncate()}");
+                        // },
                       )),
                       Text('(${Constants.productSlugModel.product.starCount})'),
                     ],
@@ -226,53 +193,79 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                     children: [
                       Text('Size'),
                       Spacer(),
-                      _itemSize(
-                        'XXL',
-                        xxl,
-                        func: () {
-                          setState(() {
-                            xxl = !xxl;
-                          });
-                        },
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      _itemSize(
-                        'XL',
-                        xl,
-                        func: () {
-                          setState(() {
-                            xl = !xl;
-                          });
-                        },
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      _itemSize(
-                        'M',
-                        m,
-                        func: () {
-                          setState(() {
-                            m = !m;
-                          });
-                        },
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      _itemSize(
-                        'L',
-                        l,
-                        func: () {
-                          setState(() {
-                            l = !l;
-                          });
-                        },
-                      )
+                      Row(
+                          children: List.generate(4, (index) {
+                        return Row(
+                          children: [
+                            SizedBox(
+                              width: 10,
+                            ),
+                            _itemSize(
+                              '${Constants.productSlugModel.product.attributes[index].sku}',
+                              xxl,
+                              func: () {
+                                setState(() {
+                                  xxl = !xxl;
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      }))
                     ],
                   ),
+
+                  // Row(
+                  //   children: [
+                  //     Text('Size'),
+                  //     Spacer(),
+                  //     _itemSize(
+                  //       'XXL',
+                  //       xxl,
+                  //       func: () {
+                  //         setState(() {
+                  //           xxl = !xxl;
+                  //         });
+                  //       },
+                  //     ),
+                  //     SizedBox(
+                  //       width: 10,
+                  //     ),
+                  //     _itemSize(
+                  //       'XL',
+                  //       xl,
+                  //       func: () {
+                  //         setState(() {
+                  //           xl = !xl;
+                  //         });
+                  //       },
+                  //     ),
+                  //     SizedBox(
+                  //       width: 10,
+                  //     ),
+                  //     _itemSize(
+                  //       'M',
+                  //       m,
+                  //       func: () {
+                  //         setState(() {
+                  //           m = !m;
+                  //         });
+                  //       },
+                  //     ),
+                  //     SizedBox(
+                  //       width: 10,
+                  //     ),
+                  //     _itemSize(
+                  //       'L',
+                  //       l,
+                  //       func: () {
+                  //         setState(() {
+                  //           l = !l;
+                  //         });
+                  //       },
+                  //     )
+                  //   ],
+                  // ),
                 ),
                 Padding(
                     padding: const EdgeInsets.only(
@@ -323,7 +316,10 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                   children: [
                     topShortSummary(number: '46%', title: 'SAVED'),
                     topShortSummary(number: '00:00:00', title: 'TIME\'SUP'),
-                    topShortSummary(number: '2', title: 'SOLD'),
+                    topShortSummary(
+                        number:
+                            '${Constants.productSlugModel.product.soldCount}',
+                        title: 'SOLD'),
                   ],
                 ),
                 SizedBox(
@@ -355,8 +351,11 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                       children: [
                         Center(
                             child: SmoothStarRating(
-                          rating: rating,
-                          isReadOnly: false,
+                          rating: Constants
+                                  .productSlugModel.product.seller.starCount /
+                              Constants
+                                  .productSlugModel.product.seller.ratingCount,
+                          isReadOnly: true,
                           size: 20,
                           color: Colors.yellow,
                           borderColor: Colors.yellow,
@@ -366,13 +365,13 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                           starCount: 5,
                           allowHalfRating: true,
                           spacing: 2.0,
-                          onRated: (value) {
-                            print("rating value -> $value");
-                            // print("rating value dd -> ${value.truncate()}");
-                          },
+                          // onRated: (value) {
+                          //   print("rating value -> $value");
+                          //   // print("rating value dd -> ${value.truncate()}");
+                          // },
                         )),
                         Text(
-                            '(${Constants.productSlugModel.product.seller.ratingCount})'),
+                            '(${Constants.productSlugModel.product.seller.starCount})'),
                       ],
                     ),
                     trailing: Padding(
@@ -393,21 +392,22 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                       child: Text('Fit Details'),
                     )),
                 SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
-                _bulletPoints('100% Cotton'),
+                _bulletPoints(Constants.productSlugModel.product.fitDetails),
                 SizedBox(
                   height: 10,
                 ),
-                _bulletPoints('Total Body Length: Approx 25\"'),
-                SizedBox(
-                  height: 20,
-                ),
+                //  _bulletPoints('Total Body Length: Approx 25\"'),
+                //   SizedBox(
+                //     height: 20,
+                //   ),
                 Divider(
                   thickness: _productTile ? 0 : 1.5,
                 ),
                 _expandedTitle(
                     title: 'Product Description',
+                    text: Constants.productSlugModel.product.description,
                     func: (value) {
                       setState(() {
                         if (_productTile) {
@@ -511,20 +511,38 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                 SizedBox(
                   height: 25,
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                      children: List.generate(5, (index) {
-                    return Container(
-                      margin: EdgeInsets.only(left: 17.0),
-                      height: 160,
-                      width: 180,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
+                // SingleChildScrollView(
+                //   scrollDirection: Axis.horizontal,
+                //   child: Row(
+                //       children: List.generate(5, (index) {
+                //     return Container(
+                //       margin: EdgeInsets.only(left: 17.0),
+                //       height: 160,
+                //       width: 180,
+                //       decoration: BoxDecoration(
+                //         color: Colors.grey,
+                //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                //       ),
+                //     );
+                //   })),
+                // ),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.93,
+                      mainAxisSpacing: 0),
+                  itemCount: Constants.productSlugModel.similarProducts.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        _item2(
+                            Constants.productSlugModel.similarProducts[index]),
+                      ],
                     );
-                  })),
+                  },
                 ),
                 SizedBox(
                   height: 15.0,
@@ -534,7 +552,82 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
           );
   }
 
-  _expandedTitle({String title, Function func}) {
+  Padding _item2(Map data) {
+    //print(data);
+    return Padding(
+        padding: EdgeInsets.only(
+          top: 20,
+          right: 15.w,
+          left: 15.w,
+        ),
+        child: Column(children: [
+          InkWell(
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                              body: ListView(
+                                  physics: BouncingScrollPhysics(),
+                                  padding: EdgeInsets.all(0),
+                                  children: [
+                                ExpiredProductPage(
+                                  slug: data['slug'],
+                                )
+                              ]))));
+            },
+            child: Container(
+              height: 250.h,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '\$${data['sale_price']}',
+                    style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
+                  ),
+                  SizedBox(
+                    width: 20.w,
+                  ),
+                  Text(
+                    '\$${data['price']}',
+                    style: TextStyle(
+                        decoration: TextDecoration.lineThrough, fontSize: 12),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.favorite_border,
+                        size: 18,
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      Text('${data['fav_count']}')
+                    ],
+                  )
+                ],
+              ),
+            ],
+          ),
+        ]));
+  }
+
+  _expandedTitle({String title, String text, Function func}) {
     return ExpansionTile(
       onExpansionChanged: func,
       tilePadding: EdgeInsets.only(right: 15, left: 17.0),
@@ -544,35 +637,45 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
       children: <Widget>[
         Container(
           margin: EdgeInsets.only(left: 17.0, right: 50.0, bottom: 20.0),
-          child: Text(
-              'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
+          child: text != null
+              ? Html(data: text)
+              : Text(
+                  'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
         ),
       ],
     );
   }
 
   _bulletPoints(String title) {
-    return Padding(
-      padding: EdgeInsets.only(left: 17.0),
-      child: Row(
-        children: [
-          Container(
-            width: 5,
-            height: 5,
-            decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(30))),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          Text(
+    return title != null
+        ? Html(data: title)
+        : Text(
             title,
             style: TextStyle(color: Colors.grey),
-          ),
-        ],
-      ),
-    );
+          );
+    // return Padding(
+    //   padding: EdgeInsets.only(left: 17.0),
+    //   child: Row(
+    //     children: [
+    //       // Container(
+    //       //   width: 5,
+    //       //   height: 5,
+    //       //   decoration: BoxDecoration(
+    //       //       color: Colors.black,
+    //       //       borderRadius: BorderRadius.all(Radius.circular(30))),
+    //       // ),
+    //       // SizedBox(
+    //       //   width: 20,
+    //       // ),
+    //       title != null
+    //           ? Html(data: title)
+    //           : Text(
+    //               title,
+    //               style: TextStyle(color: Colors.grey),
+    //             ),
+    //     ],
+    //   ),
+    // );
   }
 
   _selectColors(bool isClick, {Color color, Function func}) {
@@ -651,7 +754,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
           Row(
             children: [
               Text(
-                Constants.productSlugModel.product.slug,
+                Constants.productSlugModel.product.title,
                 style: TextStyle(fontSize: 15),
               ),
               Spacer(),

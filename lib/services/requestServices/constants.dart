@@ -3,10 +3,13 @@ import 'package:loovum_designs/services/models/LoginModel.dart';
 import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/models/RegisterModel.dart';
 import 'package:loovum_designs/services/models/RequiredModel.dart';
+import 'package:loovum_designs/services/models/blog/BlogCatModel.dart';
+import 'package:loovum_designs/services/models/blog/BlogRequiredModel.dart';
 import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerProductModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerReviewModel.dart';
+import 'package:loovum_designs/services/models/more/orderModel.dart';
 import 'package:loovum_designs/services/models/search/CollectionModel.dart';
 import 'package:loovum_designs/services/models/search/EndingSoon.dart';
 import 'package:loovum_designs/services/models/search/PopularModel.dart';
@@ -30,4 +33,8 @@ class Constants {
   static SellerModel sellerModel;
   static SellerProductModel sellerProductModel;
   static SellerReviewModel sellerReviewModel;
+
+  static List<OrdersModel> ordersModel;
+  static BlogRequiredModel blogRequiredModel;
+  static BlogCatModel blogCatModel;
 }

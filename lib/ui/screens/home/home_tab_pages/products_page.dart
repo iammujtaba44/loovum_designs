@@ -6,6 +6,7 @@ import 'package:loovum_designs/services/models/MainHomeModel.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
+import 'package:loovum_designs/ui/screens/home/home_live_product_page%20copy.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 
 void main() {
@@ -166,15 +167,35 @@ class _ProductsPageState extends State<ProductsPage> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                        body: ListView(
-                            physics: BouncingScrollPhysics(),
-                            padding: EdgeInsets.all(0),
-                            children: [ExpiredProductPage()]))),
-              );
+              if (data.activate == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                              body: ListView(
+                                  physics: BouncingScrollPhysics(),
+                                  padding: EdgeInsets.all(0),
+                                  children: [
+                                LiveProductPage(
+                                  slug: data.slug,
+                                )
+                              ]))),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                              body: ListView(
+                                  physics: BouncingScrollPhysics(),
+                                  padding: EdgeInsets.all(0),
+                                  children: [
+                                ExpiredProductPage(
+                                  slug: data.slug,
+                                )
+                              ]))),
+                );
+              }
             },
             child: Container(
               height: ScreenSize.height * 0.57,
