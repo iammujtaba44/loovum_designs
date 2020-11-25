@@ -2,6 +2,7 @@ import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/ui/screens/more/changepassword.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 
@@ -48,6 +49,25 @@ class EditProfile extends StatefulWidget {
 
 class EditProfileState extends State<EditProfile> {
   final _form = GlobalKey<FormState>();
+  bool hasData;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
+  getData({String name, String email}) async {
+    bool result = await GetMethods.accountInfoInit(name: name, email: email);
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
 
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
@@ -69,6 +89,7 @@ class EditProfileState extends State<EditProfile> {
                         margin: EdgeInsets.all(15.0),
                         child: Column(children: [
                           TextFormField(
+                            controller: nameController,
                             decoration: InputDecoration(
                               labelText: 'Full Name',
                             ),
@@ -84,6 +105,7 @@ class EditProfileState extends State<EditProfile> {
                             height: 50.0.h,
                           ),
                           TextFormField(
+                            controller: emailController,
                             decoration: InputDecoration(
                               labelText: 'Email',
                             ),
@@ -103,13 +125,9 @@ class EditProfileState extends State<EditProfile> {
                                 vertical: 30.0, horizontal: 10.0),
                             child: pinkButton(
                                 func: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Scaffold(
-                                            body: Center(
-                                                child: ChangePassword())),
-                                      ));
+                                  getData(
+                                      email: emailController.text,
+                                      name: nameController.text);
                                 },
                                 height: 80.h,
                                 width: MediaQuery.of(context).size.width,

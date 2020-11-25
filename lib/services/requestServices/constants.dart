@@ -9,6 +9,7 @@ import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerProductModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerReviewModel.dart';
+import 'package:loovum_designs/services/models/more/change_account_password_model.dart';
 import 'package:loovum_designs/services/models/more/orderModel.dart';
 import 'package:loovum_designs/services/models/search/CollectionModel.dart';
 import 'package:loovum_designs/services/models/search/EndingSoon.dart';
@@ -28,6 +29,8 @@ class Constants {
   static List<CollectionModel> collectionModel;
   static FavouriteCountModel favouriteCountModel;
   static ProductSlugModel productSlugModel;
+
+  static ChangeAccountPasswordModel changeAccountPasswordModel;
 
   //seller
   static SellerModel sellerModel;

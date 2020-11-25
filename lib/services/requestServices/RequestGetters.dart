@@ -189,4 +189,31 @@ class GetMethods {
         return true;
     }
   }
+
+  static Future<bool> accountInfoInit({String name, String email}) async {
+    var response = await RequestServices.accountInfo(name: name, email: email);
+    print('--------$response');
+
+    if (response == "success") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> changeAccountPasswordInit(
+      {String currentPassword,
+      String newPassword,
+      String confirmNewPassword}) async {
+    var response = await RequestServices.changeAccountPassword(
+        currentPassword: currentPassword,
+        confirmNewPassword: confirmNewPassword,
+        newPassword: newPassword);
+    print('-----------$response');
+    if (response == "Your Password updated successfully") {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

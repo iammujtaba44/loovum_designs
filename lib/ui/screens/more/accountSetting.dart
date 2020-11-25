@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/screens/more/about.dart';
+import 'package:loovum_designs/ui/screens/more/changepassword.dart';
+import 'package:loovum_designs/ui/screens/more/editProfile.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
@@ -47,6 +49,12 @@ class AccountSettingPage extends StatefulWidget {
 }
 
 class AccountSettingPageState extends State<AccountSettingPage> {
+  List<Widget> widgetsList = [
+    EditProfile(),
+    ChangePassword(),
+    EditProfile(),
+    EditProfile(),
+  ];
   List<String> _list = [
     'Edit Profile',
     'Change password',
@@ -72,10 +80,14 @@ class AccountSettingPageState extends State<AccountSettingPage> {
                     return Column(children: [
                       ListTile(
                         onTap: () {
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                Scaffold(body: Center(child: AboutPage())),
-                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Scaffold(
+                                    body: Center(
+                                  child: widgetsList[index],
+                                )),
+                              ));
                         },
                         title: Text(
                           _list[index],
