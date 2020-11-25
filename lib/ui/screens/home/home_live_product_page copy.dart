@@ -154,7 +154,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
                         prefs.setStringList('list', addItem);
 
                         print(prefs.get('list'));
-                        //_settingModalBottomSheet(context);
+                        _settingModalBottomSheet(context);
                       }),
                 ),
                 Padding(

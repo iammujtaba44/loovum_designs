@@ -2,6 +2,7 @@ import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/ui/screens/more/accountSetting.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 
@@ -47,16 +48,35 @@ class ChangePassword extends StatefulWidget {
 }
 
 class ChangePasswordState extends State<ChangePassword> {
-  List<String> _list = [
-    'Order History',
-    'Review Purchases',
-    'Account Settings',
-    'Support',
-    'About',
-    'Log out'
-  ];
   final _form = GlobalKey<FormState>();
   bool _obscureText = true;
+  TextEditingController currentPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmNewPasswordController = TextEditingController();
+
+  bool hasData;
+
+  getData(
+      {String currentPassword,
+      String newPassword,
+      String confirmNewPassword}) async {
+    bool result = await GetMethods.changeAccountPasswordInit(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmNewPassword: confirmNewPassword);
+
+    if (result) {
+      if (mounted) {
+        setState(() {
+          hasData = true;
+        });
+      }
+    } else if (mounted) {
+      setState(() {
+        hasData = false;
+      });
+    }
+  }
 
   void _viewPassword() {
     setState(() {
@@ -84,6 +104,7 @@ class ChangePasswordState extends State<ChangePassword> {
                         margin: EdgeInsets.all(15.0),
                         child: Column(children: [
                           TextFormField(
+                            controller: currentPasswordController,
                             decoration: InputDecoration(
                                 labelText: 'Current Password',
                                 suffixIcon: IconButton(
@@ -103,6 +124,7 @@ class ChangePasswordState extends State<ChangePassword> {
                             height: 50.0.h,
                           ),
                           TextFormField(
+                            controller: newPasswordController,
                             decoration: InputDecoration(
                                 labelText: 'New Password',
                                 suffixIcon: IconButton(
@@ -122,6 +144,7 @@ class ChangePasswordState extends State<ChangePassword> {
                             height: 50.0.h,
                           ),
                           TextFormField(
+                            controller: confirmNewPasswordController,
                             decoration: InputDecoration(
                                 labelText: 'Confirm New Password',
                                 suffixIcon: IconButton(
@@ -145,13 +168,12 @@ class ChangePasswordState extends State<ChangePassword> {
                                 vertical: 30.0, horizontal: 10.0),
                             child: pinkButton(
                                 func: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Scaffold(
-                                            body: Center(
-                                                child: AccountSettingPage())),
-                                      ));
+                                  getData(
+                                      currentPassword:
+                                          currentPasswordController.text,
+                                      newPassword: newPasswordController.text,
+                                      confirmNewPassword:
+                                          confirmNewPasswordController.text);
                                 },
                                 height: 80.h,
                                 width: MediaQuery.of(context).size.width,

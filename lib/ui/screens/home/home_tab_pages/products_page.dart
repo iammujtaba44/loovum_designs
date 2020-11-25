@@ -200,12 +200,12 @@ class _ProductsPageState extends State<ProductsPage> {
             child: Container(
               height: ScreenSize.height * 0.57,
               decoration: BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: NetworkImage(
+                        'https://api.scentpeeks.com/${data.image}')),
                 color: Colors.grey,
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: Image.network(
-                'https://api.scentpeeks.com/storage/banner/1604762439_5fa6bb47c25ce.png',
-                fit: BoxFit.cover,
               ),
             ),
           ),

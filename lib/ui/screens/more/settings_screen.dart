@@ -2,6 +2,8 @@ import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/ui/screens/more/about.dart';
+import 'package:loovum_designs/ui/screens/more/accountSetting.dart';
 import 'package:loovum_designs/ui/screens/more/order_history_screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 
@@ -15,6 +17,14 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
+  List<Widget> widgetsList = [
+    OrderHistoryScreen(),
+    OrderHistoryScreen(),
+    AccountSettingPage(),
+    OrderHistoryScreen(),
+    AboutPage(),
+    OrderHistoryScreen(),
+  ];
   List<String> _list = [
     'Order History',
     'Review Purchases',
@@ -47,8 +57,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => Scaffold(
-                                      body:
-                                          Center(child: OrderHistoryScreen()))),
+                                      body: Center(child: widgetsList[index]))),
                             );
                           },
                           child: ListTile(

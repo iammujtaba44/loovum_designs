@@ -14,6 +14,7 @@ import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerProductModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerReviewModel.dart';
+import 'package:loovum_designs/services/models/more/change_account_password_model.dart';
 import 'package:loovum_designs/services/models/more/orderModel.dart';
 import 'package:loovum_designs/services/models/search/CollectionModel.dart';
 import 'package:loovum_designs/services/models/search/EndingSoon.dart';
@@ -264,6 +265,47 @@ class RequestServices {
       }
     } catch (e) {
       print(e.toString());
+      return null;
+    }
+  }
+
+  static Future<dynamic> accountInfo({String name, String email}) async {
+    var response = await http.post(AccountInfoUrl,
+        body: {'name': name, 'email': email},
+        headers: {'Authorization': 'Bearer ${Constants.loginModel.token}'});
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      print('------------$map');
+      return map;
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  static Future<dynamic> changeAccountPassword(
+      {String currentPassword,
+      String newPassword,
+      String confirmNewPassword}) async {
+    var response = await http.post(ChangeAccountPasswordUrl, body: {
+      'current_password': currentPassword,
+      'password': newPassword,
+      'password_confirmation': confirmNewPassword
+    }, headers: {
+      'Authorization': 'Bearer ${Constants.loginModel.token}'
+    });
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      print('--------------map -> $map');
+      if (map == "Your Password updated successfully") {
+        return map;
+      }
+
+      return changeAccountPasswordModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
       return null;
     }
   }
