@@ -9,6 +9,7 @@ import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/sneak_peeks/sneak_peeks_dialog.dart';
+import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 import 'package:loovum_designs/ui/shared/widgets/single_line_detail.dart';
@@ -916,6 +917,7 @@ void _settingModalBottomSheet(context, {List<String> addItem}) {
                             prefs.get('list').forEach((element) {
                               print(element);
                             });
+                            CustomToast(text: "Your order has been placed");
                             //   print(prefs.get('list'));
                             Future.delayed(
                               Duration(seconds: 1),
