@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,38 +9,7 @@ import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
 
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(body: Center(child: ShoppingBagScreen())),
-    );
-  }
-}
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ShoppingBagScreen extends StatefulWidget {
   @override
@@ -50,6 +21,39 @@ class ShoppingBagScreen extends StatefulWidget {
 class ShoppingBagScreenState extends State<ShoppingBagScreen> {
   List<String> _cities = ['1', '2', '3', '4']; // Option 2
   String _selectedCity;
+
+  bool hasData = false;
+  // List<String> addItem = List<String>();
+  List addItem = List();
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAddBags();
+  }
+
+  var totalShip = 0.0;
+  var totalItem = 0.0;
+
+  getAddBags() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getStringList('list') != null) {
+      print('----------list is not null');
+      addItem = prefs.getStringList('list');
+
+      // print(addItem);
+      addItem.forEach((element) {
+        totalItem += getDouble(jsonDecode(element)['sale_price']);
+        //totalShip += getDouble(jsonDecode(element)['shipping_charge']);
+      });
+      //  print(totalItem);
+    }
+  }
+
+  getDouble(String val) {
+    return double.tryParse(val);
+  }
+
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     var ScreenSize = MediaQuery.of(context).size;
@@ -108,192 +112,214 @@ class ShoppingBagScreenState extends State<ShoppingBagScreen> {
         Divider(
           thickness: 2,
         ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0.h),
-          color: Colors.white10,
-          width: MediaQuery.of(context).size.width,
-          height: getScreenHeight(context) == 0
-              ? ScreenSize.height * 0.27
-              : getScreenHeight(context) == 1
-                  ? ScreenSize.height * 0.245
-                  : ScreenSize.height * 0.225,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0.h),
+              child: Text(
                 "Item in Bag",
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Column(
+              children: List.generate(addItem.length, (index) {
+                return Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0.h),
+                  color: Colors.white10,
+                  child: Column(
+                    children: [
+                      Row(
                         children: [
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Container(
-                              height: 80,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
+                          Expanded(
+                            flex: 5,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    leading: Container(
+                                      height: 80,
+                                      width: 70,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5)),
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      '${jsonDecode(addItem[index])['title']}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    subtitle: Text('3/24/styles'),
+                                    onTap: () {},
+                                  )
+                                ]),
+                          ),
+                          Expanded(
+                              child: Padding(
+                            padding: EdgeInsets.only(left: 30.0.w, top: 20.0),
+                            child: Text(
+                                '\$${jsonDecode(addItem[index])['sale_price']}',
+                                style: TextStyle(fontWeight: FontWeight.w500)),
+                          ))
+                        ],
+                      ),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        Container(
+                          padding: EdgeInsets.only(left: 20.0, right: 15.0),
+                          width: 70.0,
+                          height: 40.0,
+                          // alignment: Alignment.bottomRight,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.grey[400]),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30.0))),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              icon: Icon(Icons.keyboard_arrow_down),
+                              iconSize: 20,
+                              style: TextStyle(
+                                fontSize: 15.0,
                                 color: Colors.black,
+                                letterSpacing: 1.2,
+                              ),
+                              iconEnabledColor: Colors.grey,
+                              iconDisabledColor: Colors.red,
+                              isDense: true,
+                              items: _cities.map((city) {
+                                return DropdownMenuItem(
+                                  child: Text(city),
+                                  value: city,
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedCity = newValue;
+                                });
+                              },
+                              value: _selectedCity,
+                              isExpanded: false,
+                              hint: new Text(
+                                "1",
+                                style: TextStyle(color: Colors.black),
                               ),
                             ),
-                            title: Text(
-                              'Flexible Gym Pants| Grey',
-                              style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(width: 12.0.w),
+                        Container(
+                          // padding: EdgeInsets.all(10.0),
+                          width: 50.0,
+                          height: 40.0,
+                          // alignment: Alignment.bottomRight,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.grey[400]),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25.0))),
+                          alignment: Alignment.bottomRight,
+                          child: Center(child: Text("X")),
+                        )
+                      ]),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                          decoration: DottedDecoration(
+                              shape: Shape.line,
+                              linePosition: LinePosition.bottom)),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 20.0.h),
+                        color: Colors.white10,
+                        width: MediaQuery.of(context).size.width,
+                        height: ScreenSize.height * 0.27,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Shipping',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        fontSize: 15.0)),
+                                Text(
+                                  '0.00',
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                )
+                              ],
                             ),
-                            subtitle: Text('3/24/styles'),
-                            onTap: () {},
-                          )
-                        ]),
-                  ),
-                  Expanded(
-                      child: Padding(
-                    padding: EdgeInsets.only(left: 40.0.w, top: 20.0),
-                    child: Text('14.51',
-                        style: TextStyle(fontWeight: FontWeight.w500)),
-                  ))
-                ],
-              ),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Container(
-                  padding: EdgeInsets.only(left: 20.0, right: 15.0),
-                  width: 70.0,
-                  height: 40.0,
-                  // alignment: Alignment.bottomRight,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey[400]),
-                      borderRadius: BorderRadius.all(Radius.circular(30.0))),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton(
-                      icon: Icon(Icons.keyboard_arrow_down),
-                      iconSize: 20,
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.black,
-                        letterSpacing: 1.2,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Sorted by',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        fontSize: 15.0)),
+                                Text(
+                                  'Loovum Clothing',
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Estimated to ship by',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        fontSize: 15.0)),
+                                Text(
+                                  'Sat, Sep 05',
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Text(
+                                        'Loovum clothing usually ships within',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey,
+                                            fontSize: 15.0))),
+                                Text(
+                                  '3 Business Days',
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      iconEnabledColor: Colors.grey,
-                      iconDisabledColor: Colors.red,
-                      isDense: true,
-                      items: _cities.map((city) {
-                        return DropdownMenuItem(
-                          child: Text(city),
-                          value: city,
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedCity = newValue;
-                        });
-                      },
-                      value: _selectedCity,
-                      isExpanded: false,
-                      hint: new Text(
-                        "1",
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
+                      index < addItem.length - 1
+                          ? Container(
+                              decoration: DottedDecoration(
+                                  shape: Shape.line,
+                                  linePosition: LinePosition.bottom))
+                          : SizedBox()
+                    ],
                   ),
-                ),
-                SizedBox(width: 12.0.w),
-                Container(
-                  // padding: EdgeInsets.all(10.0),
-                  width: 50.0,
-                  height: 40.0,
-                  // alignment: Alignment.bottomRight,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey[400]),
-                      borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                  alignment: Alignment.bottomRight,
-                  child: Center(child: Text("X")),
-                )
-              ])
-            ],
-          ),
-        ),
-        Container(
-            decoration: DottedDecoration(
-                shape: Shape.line, linePosition: LinePosition.bottom)),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0.h),
-          color: Colors.white10,
-          width: MediaQuery.of(context).size.width,
-          height: ScreenSize.height * 0.27,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Shipping',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                          fontSize: 15.0)),
-                  Text(
-                    '0.00',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Sorted by',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                          fontSize: 15.0)),
-                  Text(
-                    'Loovum Clothing',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Estimated to ship by',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                          fontSize: 15.0)),
-                  Text(
-                    'Sat, Sep 05',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: Text('Loovum clothing usually ships within',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey,
-                              fontSize: 15.0))),
-                  Text(
-                    '3 Business Days',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-            ],
-          ),
+                );
+              }),
+            ),
+          ],
         ),
         Divider(
           thickness: 2,
@@ -319,7 +345,7 @@ class ShoppingBagScreenState extends State<ShoppingBagScreen> {
                           color: Colors.black,
                           fontSize: 15.0)),
                   Text(
-                    '14.1',
+                    '\$${totalItem}',
                     style: TextStyle(fontWeight: FontWeight.w500),
                   )
                 ],
@@ -333,7 +359,7 @@ class ShoppingBagScreenState extends State<ShoppingBagScreen> {
                           color: Colors.black,
                           fontSize: 15.0)),
                   Text(
-                    '0.00',
+                    '\$${totalShip}',
                     style: TextStyle(fontWeight: FontWeight.w500),
                   )
                 ],
@@ -347,7 +373,7 @@ class ShoppingBagScreenState extends State<ShoppingBagScreen> {
                           color: Colors.black,
                           fontSize: 15.0)),
                   Text(
-                    '18.25',
+                    '\$${totalItem + totalShip}',
                     style: TextStyle(fontWeight: FontWeight.w700),
                   )
                 ],

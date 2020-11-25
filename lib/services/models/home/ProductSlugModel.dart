@@ -20,22 +20,22 @@ class ProductSlugModel {
     this.liked,
   });
 
-  Product product;
+  SlugProduct product;
   List<Rating> rating;
   int ratingCount;
   List<dynamic> bestSeller;
-  List<dynamic> similarProducts;
+  List<SlugProduct> similarProducts;
   bool liked;
 
   factory ProductSlugModel.fromJson(Map<String, dynamic> json) =>
       ProductSlugModel(
-        product: Product.fromJson(json["product"]),
+        product: SlugProduct.fromJson(json["product"]),
         rating:
             List<Rating>.from(json["rating"].map((x) => Rating.fromJson(x))),
         ratingCount: json["ratingCount"],
         bestSeller: List<dynamic>.from(json["bestSeller"].map((x) => x)),
-        similarProducts:
-            List<dynamic>.from(json["similarProducts"].map((x) => x)),
+        similarProducts: List<SlugProduct>.from(
+            json["similarProducts"].map((x) => SlugProduct.fromJson(x))),
         liked: json["liked"],
       );
 
@@ -44,13 +44,14 @@ class ProductSlugModel {
         "rating": List<dynamic>.from(rating.map((x) => x.toJson())),
         "ratingCount": ratingCount,
         "bestSeller": List<dynamic>.from(bestSeller.map((x) => x)),
-        "similarProducts": List<dynamic>.from(similarProducts.map((x) => x)),
+        "similarProducts":
+            List<dynamic>.from(similarProducts.map((x) => x.toJson())),
         "liked": liked,
       };
 }
 
-class Product {
-  Product({
+class SlugProduct {
+  SlugProduct({
     this.id,
     this.categoryId,
     this.subcategoryId,
@@ -94,6 +95,9 @@ class Product {
     this.deletedAt,
     this.createdAt,
     this.updatedAt,
+    this.handlingTime,
+    this.shippingCharge,
+    this.shippingChargeTwo,
     this.galleries,
     this.attributes,
     this.accords,
@@ -129,7 +133,7 @@ class Product {
   int color;
   int size;
   int style;
-  dynamic sortOrder;
+  int sortOrder;
   DateTime startTime;
   DateTime endTime;
   dynamic seoTitle;
@@ -145,6 +149,9 @@ class Product {
   dynamic deletedAt;
   DateTime createdAt;
   DateTime updatedAt;
+  int handlingTime;
+  String shippingCharge;
+  String shippingChargeTwo;
   List<Gallery> galleries;
   List<Attribute> attributes;
   List<dynamic> accords;
@@ -152,10 +159,11 @@ class Product {
   List<Favourite> favourite;
   Category category;
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
+  factory SlugProduct.fromJson(Map<String, dynamic> json) => SlugProduct(
         id: json["id"],
         categoryId: json["category_id"],
-        subcategoryId: json["subcategory_id"],
+        subcategoryId:
+            json["subcategory_id"] == null ? null : json["subcategory_id"],
         sellerId: json["seller_id"],
         title: json["title"],
         image: json["image"],
@@ -180,7 +188,7 @@ class Product {
         color: json["color"],
         size: json["size"],
         style: json["style"],
-        sortOrder: json["sort_order"],
+        sortOrder: json["sort_order"] == null ? null : json["sort_order"],
         startTime: DateTime.parse(json["start_time"]),
         endTime: DateTime.parse(json["end_time"]),
         seoTitle: json["seo_title"],
@@ -196,21 +204,30 @@ class Product {
         deletedAt: json["deleted_at"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
-        galleries: List<Gallery>.from(
-            json["galleries"].map((x) => Gallery.fromJson(x))),
+        handlingTime: json["handling_time"],
+        shippingCharge: json["shipping_charge"],
+        shippingChargeTwo: json["shipping_charge_two"],
+        galleries: json["galleries"] == null
+            ? null
+            : List<Gallery>.from(
+                json["galleries"].map((x) => Gallery.fromJson(x))),
         attributes: List<Attribute>.from(
             json["attributes"].map((x) => Attribute.fromJson(x))),
-        accords: List<dynamic>.from(json["accords"].map((x) => x)),
-        seller: Seller.fromJson(json["seller"]),
+        accords: json["accords"] == null
+            ? null
+            : List<dynamic>.from(json["accords"].map((x) => x)),
+        seller: json["seller"] == null ? null : Seller.fromJson(json["seller"]),
         favourite: List<Favourite>.from(
             json["favourite"].map((x) => Favourite.fromJson(x))),
-        category: Category.fromJson(json["category"]),
+        category: json["category"] == null
+            ? null
+            : Category.fromJson(json["category"]),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "category_id": categoryId,
-        "subcategory_id": subcategoryId,
+        "subcategory_id": subcategoryId == null ? null : subcategoryId,
         "seller_id": sellerId,
         "title": title,
         "image": image,
@@ -235,7 +252,7 @@ class Product {
         "color": color,
         "size": size,
         "style": style,
-        "sort_order": sortOrder,
+        "sort_order": sortOrder == null ? null : sortOrder,
         "start_time": startTime.toIso8601String(),
         "end_time": endTime.toIso8601String(),
         "seo_title": seoTitle,
@@ -251,12 +268,18 @@ class Product {
         "deleted_at": deletedAt,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
-        "galleries": List<dynamic>.from(galleries.map((x) => x.toJson())),
+        "handling_time": handlingTime,
+        "shipping_charge": shippingCharge,
+        "shipping_charge_two": shippingChargeTwo,
+        "galleries": galleries == null
+            ? null
+            : List<dynamic>.from(galleries.map((x) => x.toJson())),
         "attributes": List<dynamic>.from(attributes.map((x) => x.toJson())),
-        "accords": List<dynamic>.from(accords.map((x) => x)),
-        "seller": seller.toJson(),
+        "accords":
+            accords == null ? null : List<dynamic>.from(accords.map((x) => x)),
+        "seller": seller == null ? null : seller.toJson(),
         "favourite": List<dynamic>.from(favourite.map((x) => x.toJson())),
-        "category": category.toJson(),
+        "category": category == null ? null : category.toJson(),
       };
 }
 
@@ -279,7 +302,7 @@ class Attribute {
   int productId;
   String sku;
   String value;
-  String type;
+  Type type;
   String price;
   int stock;
   String colorImage;
@@ -292,7 +315,7 @@ class Attribute {
         productId: json["product_id"],
         sku: json["sku"],
         value: json["value"],
-        type: json["type"],
+        type: typeValues.map[json["type"]],
         price: json["price"],
         stock: json["stock"],
         colorImage: json["color_image"] == null ? null : json["color_image"],
@@ -306,7 +329,7 @@ class Attribute {
         "product_id": productId,
         "sku": sku,
         "value": value,
-        "type": type,
+        "type": typeValues.reverse[type],
         "price": price,
         "stock": stock,
         "color_image": colorImage == null ? null : colorImage,
@@ -315,6 +338,10 @@ class Attribute {
         "updated_at": updatedAt.toIso8601String(),
       };
 }
+
+enum Type { SIZE, COLOR }
+
+final typeValues = EnumValues({"color": Type.COLOR, "size": Type.SIZE});
 
 class Category {
   Category({
@@ -708,4 +735,18 @@ class User {
             List<dynamic>.from(favouriteProducts.map((x) => x)),
         "favourites": List<dynamic>.from(favourites.map((x) => x)),
       };
+}
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
+  }
 }

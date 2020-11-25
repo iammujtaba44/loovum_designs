@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_live_product_page%20copy.dart';
@@ -552,7 +553,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
           );
   }
 
-  Padding _item2(Map data) {
+  Padding _item2(SlugProduct data) {
     //print(data);
     return Padding(
         padding: EdgeInsets.only(
@@ -563,18 +564,33 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
         child: Column(children: [
           InkWell(
             onTap: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Scaffold(
-                              body: ListView(
-                                  physics: BouncingScrollPhysics(),
-                                  padding: EdgeInsets.all(0),
-                                  children: [
-                                ExpiredProductPage(
-                                  slug: data['slug'],
-                                )
-                              ]))));
+              if (data.activate == 1) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                                body: ListView(
+                                    physics: BouncingScrollPhysics(),
+                                    padding: EdgeInsets.all(0),
+                                    children: [
+                                  LiveProductPage(
+                                    slug: data.slug,
+                                  )
+                                ]))));
+              } else {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                                body: ListView(
+                                    physics: BouncingScrollPhysics(),
+                                    padding: EdgeInsets.all(0),
+                                    children: [
+                                  ExpiredProductPage(
+                                    slug: data.slug,
+                                  )
+                                ]))));
+              }
             },
             child: Container(
               height: 250.h,
@@ -593,14 +609,14 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
               Row(
                 children: [
                   Text(
-                    '\$${data['sale_price']}',
+                    '\$${data.salePrice}',
                     style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
                   ),
                   SizedBox(
                     width: 20.w,
                   ),
                   Text(
-                    '\$${data['price']}',
+                    '\$${data.price}',
                     style: TextStyle(
                         decoration: TextDecoration.lineThrough, fontSize: 12),
                   ),
@@ -617,7 +633,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                       SizedBox(
                         width: 5.w,
                       ),
-                      Text('${data['fav_count']}')
+                      Text('${data.favCount}')
                     ],
                   )
                 ],

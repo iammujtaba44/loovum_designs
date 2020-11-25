@@ -4,6 +4,7 @@ import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
@@ -144,17 +145,8 @@ class _LiveProductPageState extends State<LiveProductPage> {
                       width: double.infinity,
                       isRounded: true,
                       title: 'Add to Bag',
-                      func: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-
-                        addItem.add(
-                            json.encode(Constants.productSlugModel.product));
-
-                        prefs.setStringList('list', addItem);
-
-                        print(prefs.get('list'));
-                        //_settingModalBottomSheet(context);
+                      func: () {
+                        _settingModalBottomSheet(context, addItem: addItem);
                       }),
                 ),
                 Padding(
@@ -446,7 +438,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
           );
   }
 
-  Padding _item2(Map data) {
+  Padding _item2(SlugProduct data) {
     //print(data);
     return Padding(
         padding: EdgeInsets.only(
@@ -457,7 +449,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
         child: Column(children: [
           InkWell(
             onTap: () {
-              if (data['activate'] == 1) {
+              if (data.activate == 1) {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -467,7 +459,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
                                     padding: EdgeInsets.all(0),
                                     children: [
                                   LiveProductPage(
-                                    slug: data['slug'],
+                                    slug: data.slug,
                                   )
                                 ]))));
               } else {
@@ -480,7 +472,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
                                     padding: EdgeInsets.all(0),
                                     children: [
                                   ExpiredProductPage(
-                                    slug: data['slug'],
+                                    slug: data.slug,
                                   )
                                 ]))));
               }
@@ -502,14 +494,14 @@ class _LiveProductPageState extends State<LiveProductPage> {
               Row(
                 children: [
                   Text(
-                    '\$${data['sale_price']}',
+                    '\$${data.salePrice}',
                     style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
                   ),
                   SizedBox(
                     width: 20.w,
                   ),
                   Text(
-                    '\$${data['price']}',
+                    '\$${data.price}',
                     style: TextStyle(
                         decoration: TextDecoration.lineThrough, fontSize: 12),
                   ),
@@ -526,7 +518,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
                       SizedBox(
                         width: 5.w,
                       ),
-                      Text('${data['fav_count']}')
+                      Text('${data.favCount}')
                     ],
                   )
                 ],
@@ -780,7 +772,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
   }
 }
 
-void _settingModalBottomSheet(context) {
+void _settingModalBottomSheet(context, {List<String> addItem}) {
   showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -810,17 +802,23 @@ void _settingModalBottomSheet(context) {
                                 height: 5.h,
                               ),
                               singleLineDetail(
-                                  title: 'ORDER SUBTOTAL', price: '\$0.00'),
+                                  title: 'ORDER SUBTOTAL',
+                                  price:
+                                      '\$${Constants.productSlugModel.product.salePrice}'),
                               SizedBox(
                                 height: 5.h,
                               ),
                               singleLineDetail(
-                                  title: 'ORDER SUBTOTAL', price: '\$0.00'),
+                                  title: 'Shipping',
+                                  price:
+                                      '\$${Constants.productSlugModel.product.shippingCharge}'),
                               SizedBox(
                                 height: 5.h,
                               ),
                               singleLineDetail(
-                                  title: 'ORDER SUBTOTAL', price: '\$0.00'),
+                                  title: 'Tax',
+                                  price:
+                                      '\$${Constants.productSlugModel.product.shippingChargeTwo}'),
                               SizedBox(
                                 height: 5.h,
                               ),
@@ -832,7 +830,7 @@ void _settingModalBottomSheet(context) {
                                   ),
                                   Spacer(),
                                   Text(
-                                    '\$23.21',
+                                    '\$${double.tryParse(Constants.productSlugModel.product.salePrice) + double.tryParse(Constants.productSlugModel.product.shippingCharge) + double.tryParse(Constants.productSlugModel.product.shippingChargeTwo)}',
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ],
@@ -906,7 +904,19 @@ void _settingModalBottomSheet(context) {
                         padding: EdgeInsets.all(8.h),
                         child: SlideAction(
                           key: _key,
-                          onSubmit: () {
+                          onSubmit: () async {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+
+                            addItem.add(json
+                                .encode(Constants.productSlugModel.product));
+
+                            prefs.setStringList('list', addItem);
+
+                            prefs.get('list').forEach((element) {
+                              print(element);
+                            });
+                            //   print(prefs.get('list'));
                             Future.delayed(
                               Duration(seconds: 1),
                               () => _key.currentState.reset(),
