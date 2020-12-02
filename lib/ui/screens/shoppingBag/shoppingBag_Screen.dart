@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/services/models/shoppingBag/ShoppingBagModel.dart';
 import 'package:loovum_designs/ui/screens/shoppingBag/paymentMethods_screen.dart';
 import 'package:loovum_designs/ui/screens/shoppingBag/shippingAddress_Screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,6 +26,7 @@ class ShoppingBagScreenState extends State<ShoppingBagScreen> {
   bool hasData = false;
   // List<String> addItem = List<String>();
   List addItem = List();
+  List<ShopingBagModel> _dataList = List();
 
   void initState() {
     // TODO: implement initState
@@ -46,6 +48,25 @@ class ShoppingBagScreenState extends State<ShoppingBagScreen> {
         totalItem += getDouble(jsonDecode(element)['sale_price']);
         //totalShip += getDouble(jsonDecode(element)['shipping_charge']);
       });
+
+      addItem.forEach((element) {
+        _dataList.add(new ShopingBagModel(
+            id: jsonDecode(element)['id'],
+            name: jsonDecode(element)['title'],
+            image: jsonDecode(element)['image'],
+            slug: jsonDecode(element)['slug'],
+            price: jsonDecode(element)['sale_price'],
+            qty: 1,
+            size: 'black',
+            color: '',
+            style: '',
+            shippingTime: 0,
+            shippingCharge: jsonDecode(element)['shipping_charge'],
+            shippingChargeTwo: jsonDecode(element)['shipping_charge_two'],
+            sellerName: jsonDecode(element)['seller']['name'],
+            errors: Errors(style: false, color: false, size: false)));
+      });
+      print(_dataList.length);
       //  print(totalItem);
     }
   }
@@ -392,13 +413,22 @@ class ShoppingBagScreenState extends State<ShoppingBagScreen> {
                   : ScreenSize.height * 0.07,
               width: MediaQuery.of(context).size.width,
               title: "Place Order",
-              func: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Scaffold(body: Center(child: ShippingAddress()))),
-                );
+              func: () async {
+                var response = await http
+                    .post('https://api.scentpeeks.com/api/checkout', body: {
+                  'cart': _dataList.toString(),
+                  'card_id': '1',
+                  'shipping_id': '1'
+                });
+
+                print(response.body);
+
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) =>
+                //           Scaffold(body: Center(child: ShippingAddress()))),
+                // );
               }),
         ),
         SizedBox(
