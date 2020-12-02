@@ -89,23 +89,23 @@ class _HomeState extends State<Home> {
         items: [
           BottomNavigationBarItem(
               icon: ImageIcon(
-            AssetImage('assets/images/home_black.png'),
+            AssetImage('assets/home_black.png'),
           )),
           BottomNavigationBarItem(
               icon: ImageIcon(
-            AssetImage('assets/images/search_icon.png'),
+            AssetImage('assets/search_icon.png'),
           )),
           BottomNavigationBarItem(
               icon: ImageIcon(
-            AssetImage('assets/images/middle_icon2.png'),
+            AssetImage('assets/middle_icon.png'),
           )),
           BottomNavigationBarItem(
               icon: ImageIcon(
-            AssetImage('assets/images/shopping_bag.png'),
+            AssetImage('assets/shopping_bag.png'),
           )),
           BottomNavigationBarItem(
               icon: ImageIcon(
-            AssetImage('assets/images/more_icon.png'),
+            AssetImage('assets/more_icon.png'),
           )),
         ],
         currentIndex: pageIndex,
