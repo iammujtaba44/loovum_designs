@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loovum_designs/ui/screens/home/home.dart';
 import 'package:loovum_designs/ui/screens/sign_in_screen.dart';
 import 'package:loovum_designs/ui/screens/sign_up_screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
@@ -93,9 +94,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                   color: Color(0xFFE6798A),
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => SignInScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => Home()), //SignInScreen()),
                     );
                   },
                 ),

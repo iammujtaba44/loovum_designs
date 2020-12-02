@@ -32,6 +32,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
   bool xxl = false, xl = false, m = false, l = false;
   bool hasData = false;
   List<String> addItem = List<String>();
+  String _dataImage = '';
 
   void initState() {
     // TODO: implement initState
@@ -55,6 +56,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
       if (mounted) {
         setState(() {
           hasData = true;
+          _dataImage = Constants.productSlugModel.product.image;
         });
       }
     } else if (mounted) {
@@ -97,8 +99,15 @@ class _LiveProductPageState extends State<LiveProductPage> {
                 Stack(
                   children: [
                     Container(
-                      color: Colors.grey,
                       height: 700.h,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                                'https://api.scentpeeks.com/${_dataImage}')),
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
                     ),
                     Positioned(
                       bottom: 10,
@@ -111,7 +120,8 @@ class _LiveProductPageState extends State<LiveProductPage> {
                             color: Colors.white,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        child: Text('1 of 15'),
+                        child: Text(
+                            '1 of ${Constants.productSlugModel.product.galleries.length + 1}'),
                       ),
                     ),
                   ],
@@ -122,13 +132,21 @@ class _LiveProductPageState extends State<LiveProductPage> {
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: [
-                      _littleSamplePhoto(),
-                      _littleSamplePhoto(),
-                      _littleSamplePhoto(),
-                      _littleSamplePhoto(),
-                      _littleSamplePhoto(),
-                    ],
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    children: List.generate(
+                        Constants.productSlugModel.product.galleries.length,
+                        (index) {
+                      return _littleSamplePhoto(
+                          Constants.productSlugModel.product.galleries[index]);
+                    }),
+                    // children: [
+                    //   _littleSamplePhoto(),
+                    //   _littleSamplePhoto(),
+                    //   _littleSamplePhoto(),
+                    //   _littleSamplePhoto(),
+                    //   _littleSamplePhoto(),
+                    // ],
                   ),
                 ),
                 _itemInfo(),
@@ -713,20 +731,31 @@ class _LiveProductPageState extends State<LiveProductPage> {
     );
   }
 
-  _littleSamplePhoto() {
+  _littleSamplePhoto(Gallery data) {
     return Row(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            border: Border.all(
-                width: 2,
-                color: Colors.black //                   <--- border width here
-                ),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+        InkWell(
+          onTap: () {
+            // print(data.image);
+            setState(() {
+              if (_dataImage != data.image) {
+                _dataImage = data.image;
+              }
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              border: Border.all(
+                  width: 2,
+                  color:
+                      Colors.black //                   <--- border width here
+                  ),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            height: 70,
+            width: 70,
           ),
-          height: 70,
-          width: 70,
         ),
         SizedBox(
           width: 10,

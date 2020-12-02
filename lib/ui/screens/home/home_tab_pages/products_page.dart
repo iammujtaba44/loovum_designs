@@ -10,6 +10,8 @@ import 'package:loovum_designs/ui/screens/home/home_live_product_page%20copy.dar
 
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 
+import '../../sign_in_screen.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -82,7 +84,7 @@ class _ProductsPageState extends State<ProductsPage> {
         : ListView.builder(
             itemCount: Constants.mainHomeModel.count,
             itemBuilder: (context, index) {
-              return _item(Constants.mainHomeModel.products[index]);
+              return _item(Constants.mainHomeModel.products[index], index);
             }
             // children: [
             //   _item(),
@@ -91,76 +93,9 @@ class _ProductsPageState extends State<ProductsPage> {
             );
   }
 
-  // _containerIner() {
-  //   return Container(
-  //     padding: EdgeInsets.symmetric(horizontal: 18.0),
-  //     child: Column(
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Text('Flexible gym sweat pants | S - XL'),
-  //             Spacer(),
-  //             Row(
-  //               children: [
-  //                 Icon(
-  //                   Icons.favorite_border,
-  //                   size: 19,
-  //                   color: Colors.grey,
-  //                 ),
-  //                 SizedBox(
-  //                   width: 5.w,
-  //                 ),
-  //                 Text(
-  //                   '503',
-  //                   style: TextStyle(color: Colors.grey),
-  //                 )
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-  //         Row(
-  //           children: [
-  //             Text(
-  //               '\$14.51',
-  //               style: TextStyle(color: Color(0xFFE6798A), fontSize: 13),
-  //             ),
-  //             SizedBox(
-  //               width: 20.w,
-  //             ),
-  //             Row(
-  //               children: [
-  //                 Text(
-  //                   '\$8.23',
-  //                   style: TextStyle(
-  //                       decoration: TextDecoration.lineThrough, fontSize: 12),
-  //                 ),
-  //                 SizedBox(
-  //                   width: 10.w,
-  //                 ),
-  //                 Container(
-  //                   decoration: BoxDecoration(
-  //                     color: Colors.grey[300],
-  //                     borderRadius: BorderRadius.all(Radius.circular(10)),
-  //                   ),
-  //                   child: Padding(
-  //                     padding: const EdgeInsets.only(
-  //                         left: 8.0, right: 8.0, top: 2, bottom: 2),
-  //                     child: Text(
-  //                       'FREE SHIPPING',
-  //                       style: TextStyle(fontSize: 12),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  List<int> _likeList = List();
 
-  Padding _item(Product data) {
+  Padding _item(Product data, int index) {
     var ScreenSize = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.only(top: 35, right: 18, left: 18),
@@ -168,43 +103,48 @@ class _ProductsPageState extends State<ProductsPage> {
         children: [
           GestureDetector(
             onTap: () {
-              if (data.activate == 1) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Scaffold(
-                              body: ListView(
-                                  physics: BouncingScrollPhysics(),
-                                  padding: EdgeInsets.all(0),
-                                  children: [
-                                LiveProductPage(
-                                  slug: data.slug,
-                                )
-                              ]))),
-                );
+              if (Constants.loginModel != null) {
+                if (data.activate == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                                body: ListView(
+                                    physics: BouncingScrollPhysics(),
+                                    padding: EdgeInsets.all(0),
+                                    children: [
+                                  LiveProductPage(
+                                    slug: data.slug,
+                                  )
+                                ]))),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                                body: ListView(
+                                    physics: BouncingScrollPhysics(),
+                                    padding: EdgeInsets.all(0),
+                                    children: [
+                                  ExpiredProductPage(
+                                    slug: data.slug,
+                                  )
+                                ]))),
+                  );
+                }
               } else {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Scaffold(
-                              body: ListView(
-                                  physics: BouncingScrollPhysics(),
-                                  padding: EdgeInsets.all(0),
-                                  children: [
-                                ExpiredProductPage(
-                                  slug: data.slug,
-                                )
-                              ]))),
-                );
+                    context, MaterialPageRoute(builder: (_) => SignInScreen()));
               }
             },
             child: Container(
               height: ScreenSize.height * 0.57,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                     image: NetworkImage(
-                        'https://api.scentpeeks.com/${data.image}')),
+                        'https://api.scentpeeks.com/${data.image ?? false}')),
                 color: Colors.grey,
                 borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
@@ -222,18 +162,46 @@ class _ProductsPageState extends State<ProductsPage> {
               Spacer(),
               Row(
                 children: [
-                  Icon(
-                    Icons.favorite_border,
-                    size: 19,
-                    color: Colors.grey,
+                  InkWell(
+                    onTap: () {
+                      if (Constants.loginModel != null) {
+                        if (_likeList.contains(index))
+                          setState(() {
+                            _likeList.remove(index);
+                          });
+                        else
+                          setState(() {
+                            _likeList.add(index);
+                          });
+                      } else {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => SignInScreen()));
+                      }
+                    },
+                    child: !_likeList.contains(index)
+                        ? Icon(
+                            Icons.favorite_border,
+                            size: 19,
+                            color: Colors.grey,
+                          )
+                        : Icon(
+                            Icons.favorite,
+                            size: 19,
+                            color: Colors.red,
+                          ),
                   ),
                   SizedBox(
                     width: 5.w,
                   ),
-                  Text(
-                    '${data.favCount}',
-                    style: TextStyle(color: Colors.grey),
-                  )
+                  _likeList.contains(index)
+                      ? Text(
+                          '${data.favCount + 1}',
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      : Text(
+                          '${data.favCount}',
+                          style: TextStyle(color: Colors.grey),
+                        ),
                 ],
               ),
             ],

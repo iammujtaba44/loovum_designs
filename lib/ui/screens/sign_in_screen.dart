@@ -8,38 +8,6 @@ import 'package:loovum_designs/ui/screens/sign_up_screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: SignInScreen(),
-    );
-  }
-}
-
 class SignInScreen extends StatefulWidget {
   @override
   _SignInScreenState createState() => _SignInScreenState();
@@ -155,7 +123,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       CustomToast(text: 'Login Successfully');
                       emailController.clear();
                       passwordController.clear();
-                      Navigator.push(context,
+                      Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => Home()));
                     } else if (!result)
                       CustomToast(text: 'Email or password is wrong');
