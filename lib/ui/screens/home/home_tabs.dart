@@ -70,7 +70,7 @@ class _HomeTabsState extends State<HomeTabs> {
               ],
             ),
             title: Image.asset(
-              'assets/images/logo.png',
+              'assets/home_logo.png',
             ),
           ),
           body: TabBarView(

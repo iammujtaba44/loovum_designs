@@ -71,18 +71,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(
                 height: 25.h,
               ),
-              Center(
-                child: Container(
-                  height: 100.h,
-                  width: 200.w,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: AssetImage('assets/images/logo.png'),
-                  )),
-                ),
-              ),
+              Center(child: Image.asset('assets/sign_up_logo.png')),
               Padding(
-                padding: EdgeInsets.only(left: 10.w, bottom: 10.h),
+                padding: EdgeInsets.only(top: 40.w, left: 10.w, bottom: 10.h),
                 child: Icon(
                   Icons.arrow_back_ios,
                   size: 20,

@@ -173,7 +173,7 @@ class _FavouritesPageState extends State<FavouritesPage> {
           ),
           Padding(
             padding: EdgeInsets.only(top: 45),
-            child: Image.asset('assets/images/heart_icon.png'),
+            child: Image.asset('assets/heart_icon.png'),
           ),
           SizedBox(
             height: 25.h,

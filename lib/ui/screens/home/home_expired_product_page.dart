@@ -156,7 +156,7 @@ class _ExpiredProductPageState extends State<ExpiredProductPage> {
                   children: [
                     Container(
                         margin: const EdgeInsets.only(left: 17.0, right: 8.0),
-                        child: Image.asset('assets/images/delivery_car.png')),
+                        child: Image.asset('assets/delivery_car.png')),
                     Text('This seller usually ships within 2 days.'),
                   ],
                 ),

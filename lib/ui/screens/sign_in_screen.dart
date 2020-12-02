@@ -66,16 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(
                 height: 50.h,
               ),
-              Center(
-                child: Container(
-                  height: 50,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: AssetImage('assets/images/logo.png'),
-                  )),
-                ),
-              ),
+              Center(child: Image.asset('assets/sign_up_logo.png')),
               SizedBox(
                 height: 28.0,
               ),

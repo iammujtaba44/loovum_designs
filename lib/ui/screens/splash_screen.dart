@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loovum_designs/ui/screens/sign_in_screen.dart';
+import 'package:loovum_designs/ui/screens/sign_up_screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
 
 void main() {
@@ -57,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               Center(
                   child: Image.asset(
-                'assets/images/logo.png',
+                'assets/logo.png',
                 height: 50.0,
               )),
               SizedBox(
@@ -106,10 +107,18 @@ class _SplashScreenState extends State<SplashScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Not a Loovum member? '),
-                  Text('Sign up',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFE6798A))),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SignUpScreen()));
+                    },
+                    child: Text('Sign up',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFE6798A))),
+                  ),
                 ],
               ),
               SizedBox(
