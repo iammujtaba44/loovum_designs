@@ -17,3 +17,5 @@ const String SellerUrl = BaseUrl + "seller/";
 const String OrderUrl = BaseUrl + "orders";
 const String BlogRequiredUrl = BaseUrl + "blog/required";
 const String BlogCatUrl = BaseUrl + "blog/category/";
+const String ProductLikeURL = BaseUrl + "product/like/";
+const String ProductDisLikeURL = BaseUrl + 'product/unlike/';

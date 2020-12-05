@@ -5,6 +5,7 @@ import 'package:loovum_designs/services/models/RegisterModel.dart';
 import 'package:loovum_designs/services/models/RequiredModel.dart';
 import 'package:loovum_designs/services/models/blog/BlogCatModel.dart';
 import 'package:loovum_designs/services/models/blog/BlogRequiredModel.dart';
+import 'package:loovum_designs/services/models/home/ProductLikeModel.dart';
 import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerProductModel.dart';
@@ -40,4 +41,6 @@ class Constants {
   static List<OrdersModel> ordersModel;
   static BlogRequiredModel blogRequiredModel;
   static BlogCatModel blogCatModel;
+
+  static ProductLikeModel productLikeModel;
 }

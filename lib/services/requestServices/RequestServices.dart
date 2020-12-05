@@ -10,6 +10,7 @@ import 'package:loovum_designs/services/models/RequiredModel.dart';
 import 'package:loovum_designs/services/models/UserModel.dart';
 import 'package:loovum_designs/services/models/blog/BlogCatModel.dart';
 import 'package:loovum_designs/services/models/blog/BlogRequiredModel.dart';
+import 'package:loovum_designs/services/models/home/ProductLikeModel.dart';
 import 'package:loovum_designs/services/models/home/ProductSlugModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerModel.dart';
 import 'package:loovum_designs/services/models/home/seller/SellerProductModel.dart';
@@ -304,6 +305,35 @@ class RequestServices {
       }
 
       return changeAccountPasswordModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  static Future<ProductLikeModel> productLike(String productId) async {
+    var response = await http.get(ProductLikeURL + productId,
+        headers: {'Authorization': 'Bearer ${Constants.loginModel.token}'});
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      if (map == 'failed') {
+        return null;
+      }
+      return productLikeModelFromJson(map);
+    } else {
+      print("Query failed: ${response.body} (${response.statusCode})");
+      return null;
+    }
+  }
+
+  static Future<String> productDislike(String productId) async {
+    var response = await http.get(ProductDisLikeURL + productId,
+        headers: {'Authorization': 'Bearer ${Constants.loginModel.token}'});
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final String map = response.body;
+      return map;
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
       return null;

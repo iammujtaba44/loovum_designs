@@ -5,6 +5,10 @@ import 'package:loovum_designs/services/requestServices/RequestServices.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 
+import '../apis/Apis.dart';
+import 'RequestServices.dart';
+import 'RequestServices.dart';
+
 class GetMethods {
   static Future<bool> blogCatInit({String slug}) async {
     Constants.blogCatModel = await RequestServices.blogcat(slug: slug);
@@ -215,5 +219,29 @@ class GetMethods {
     } else {
       return false;
     }
+  }
+
+  static Future<bool> productLike(String productId) async {
+    Constants.productLikeModel = await RequestServices.productLike(productId);
+
+    print('---- THIS IS PRODUCT LIKE RESPONSE: ${Constants.productLikeModel}');
+
+    if (Constants.productLikeModel != null) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static Future<bool> productDislike(String productId) async {
+    String result = await RequestServices.productDislike(productId);
+
+    print('--- This is DISLIKE product API RESPONSE: $result');
+
+    if (result == null) {
+      return false;
+    }
+
+    return true;
   }
 }
