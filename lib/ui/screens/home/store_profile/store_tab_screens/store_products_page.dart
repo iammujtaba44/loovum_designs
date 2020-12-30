@@ -39,6 +39,8 @@ class MyApp extends StatelessWidget {
 }
 
 class StoreProductsPage extends StatefulWidget {
+  String sellerId;
+  StoreProductsPage({this.sellerId});
   @override
   _StoreProductsPageState createState() => _StoreProductsPageState();
 }
@@ -47,7 +49,7 @@ class _StoreProductsPageState extends State<StoreProductsPage> {
   bool hasData = false;
 
   getData() async {
-    bool result = await GetMethods.sellerProductInit();
+    bool result = await GetMethods.sellerProductInit(sId: widget.sellerId);
 
     if (result) {
       if (mounted) {

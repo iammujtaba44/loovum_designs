@@ -47,6 +47,9 @@ class MyApp extends StatelessWidget {
 }
 
 class StoreProfile extends StatefulWidget {
+  String sellerName;
+  String sellerId;
+  StoreProfile({this.sellerId, this.sellerName});
   @override
   _StoreProfileState createState() => _StoreProfileState();
 }
@@ -62,7 +65,7 @@ class _StoreProfileState extends State<StoreProfile> {
   }
 
   getData() async {
-    bool result = await GetMethods.sellerInit();
+    bool result = await GetMethods.sellerInit(sellerName: widget.sellerName);
 
     if (result) {
       if (mounted) {
@@ -175,8 +178,12 @@ class _StoreProfileState extends State<StoreProfile> {
                       Expanded(
                         child: TabBarView(
                           children: [
-                            StoreProductsPage(),
-                            StoreReviewsPage(),
+                            StoreProductsPage(
+                              sellerId: widget.sellerId,
+                            ),
+                            StoreReviewsPage(
+                              sellerId: widget.sellerId,
+                            ),
                             StoreAboutPage(),
                           ],
                         ),

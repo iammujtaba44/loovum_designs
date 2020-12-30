@@ -9,6 +9,7 @@ import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home_expired_product_page.dart';
 import 'package:loovum_designs/ui/screens/home/home_tab_pages/sneak_peeks/sneak_peeks_dialog.dart';
+import 'package:loovum_designs/ui/screens/home/store_profile/home_store_profile.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 import 'package:loovum_designs/ui/shared/widgets/appBar.dart';
 import 'package:loovum_designs/ui/shared/widgets/pink_button.dart';
@@ -33,7 +34,10 @@ class _LiveProductPageState extends State<LiveProductPage> {
   bool hasData = false;
   List<String> addItem = List<String>();
   String _dataImage = '';
-
+  TextEditingController sizeCtr = TextEditingController();
+  TextEditingController colorCtr = TextEditingController();
+  TextEditingController quantityCtr = TextEditingController();
+  int bagCount = 0;
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -45,6 +49,7 @@ class _LiveProductPageState extends State<LiveProductPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getStringList('list') != null) {
       print('----------list is not null');
+      bagCount = prefs.getInt('count');
       addItem = prefs.getStringList('list');
     }
   }
@@ -90,12 +95,36 @@ class _LiveProductPageState extends State<LiveProductPage> {
                         icon: Icon(Icons.keyboard_arrow_left_sharp,
                             color: Colors.black),
                         onPressed: null),
-                    trailingIcon: IconButton(
-                        icon: Icon(
-                          Icons.shopping_bag_outlined,
-                          color: Colors.black,
-                        ),
-                        onPressed: null)),
+                    trailingIcon: Stack(
+                      children: [
+                        IconButton(
+                            icon: Icon(
+                              Icons.shopping_bag_outlined,
+                              color: Colors.black,
+                              size: 30.0,
+                            ),
+                            onPressed: null),
+                        bagCount == 0
+                            ? SizedBox()
+                            : Positioned(
+                                right: 7,
+                                top: 8,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30.0))),
+                                  child: Text(
+                                    '${bagCount}',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              )
+                      ],
+                    )),
                 Stack(
                   children: [
                     Container(
@@ -153,6 +182,14 @@ class _LiveProductPageState extends State<LiveProductPage> {
                 SizedBox(
                   height: 40.h,
                 ),
+                getFields(height: ScreenSize.height),
+                SizedBox(
+                  height: 30.h,
+                ),
+                getRow(height: ScreenSize.height, width: ScreenSize.width),
+                SizedBox(
+                  height: 30.h,
+                ),
                 Padding(
                   padding: EdgeInsets.only(
                     left: 16.0,
@@ -164,104 +201,118 @@ class _LiveProductPageState extends State<LiveProductPage> {
                       width: double.infinity,
                       isRounded: true,
                       title: 'Add to Bag',
-                      func: () {
-                        _settingModalBottomSheet(context, addItem: addItem);
+                      func: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+
+                        addItem.add(
+                            json.encode(Constants.productSlugModel.product));
+
+                        prefs.setStringList('list', addItem);
+                        prefs.setInt('count', (bagCount + 1));
+                        setState(() {
+                          bagCount++;
+                        });
+                        prefs.get('list').forEach((element) {
+                          print(element);
+                        });
+                        CustomToast(text: "Your order has been placed");
                       }),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Row(
-                    children: [
-                      Text('Size'),
-                      Spacer(),
-                      Row(
-                          children: List.generate(4, (index) {
-                        return Row(
-                          children: [
-                            SizedBox(
-                              width: 10,
-                            ),
-                            _itemSize(
-                              '${Constants.productSlugModel.product.attributes[index].sku}',
-                              xxl,
-                              func: () {
-                                setState(() {
-                                  xxl = !xxl;
-                                });
-                              },
-                            ),
-                          ],
-                        );
-                      }))
-                    ],
-                  ),
-
-                  // child: Row(
-                  //   children: [
-                  //     Text('Size'),
-                  //     Spacer(),
-                  //     SizedBox(
-                  //       width: 10.w,
-                  //     ),
-                  //     _itemSize(
-                  //       'XL',
-                  //       xl,
-                  //       func: () {
-                  //         setState(() {
-                  //           xl = !xl;
-                  //         });
-                  //       },
-                  //     ),
-                  //     SizedBox(
-                  //       width: 10.w,
-                  //     ),
-                  //     _itemSize(
-                  //       'M',
-                  //       m,
-                  //       func: () {
-                  //         setState(() {
-                  //           m = !m;
-                  //         });
-                  //       },
-                  //     ),
-                  //     SizedBox(
-                  //       width: 10.w,
-                  //     ),
-                  //     _itemSize(
-                  //       'L',
-                  //       l,
-                  //       func: () {
-                  //         setState(() {
-                  //           l = !l;
-                  //         });
-                  //       },
-                  //     )
-                  //   ],
-                  // ),
-                ),
-                Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8.0, right: 8.0, top: 16),
-                    child: Row(
-                      children: [
-                        Text('Colors'),
-                        Spacer(),
-                        _selectColors(
-                          false,
-                          func: () {},
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        _selectColors(false, func: () {}, color: Colors.black),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        _selectColors(false,
-                            func: () {}, color: Color(0xFFB74FAF))
-                      ],
-                    )),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                //   child: Row(
+                //     children: [
+                //       Text('Size'),
+                //       Spacer(),
+                //       Row(
+                //           children: List.generate(4, (index) {
+                //         return Row(
+                //           children: [
+                //             SizedBox(
+                //               width: 10,
+                //             ),
+                //             _itemSize(
+                //               '${Constants.productSlugModel.product.attributes[index].sku}',
+                //               xxl,
+                //               func: () {
+                //                 setState(() {
+                //                   xxl = !xxl;
+                //                 });
+                //               },
+                //             ),
+                //           ],
+                //         );
+                //       }))
+                //     ],
+                //   ),
+                //
+                //   // child: Row(
+                //   //   children: [
+                //   //     Text('Size'),
+                //   //     Spacer(),
+                //   //     SizedBox(
+                //   //       width: 10.w,
+                //   //     ),
+                //   //     _itemSize(
+                //   //       'XL',
+                //   //       xl,
+                //   //       func: () {
+                //   //         setState(() {
+                //   //           xl = !xl;
+                //   //         });
+                //   //       },
+                //   //     ),
+                //   //     SizedBox(
+                //   //       width: 10.w,
+                //   //     ),
+                //   //     _itemSize(
+                //   //       'M',
+                //   //       m,
+                //   //       func: () {
+                //   //         setState(() {
+                //   //           m = !m;
+                //   //         });
+                //   //       },
+                //   //     ),
+                //   //     SizedBox(
+                //   //       width: 10.w,
+                //   //     ),
+                //   //     _itemSize(
+                //   //       'L',
+                //   //       l,
+                //   //       func: () {
+                //   //         setState(() {
+                //   //           l = !l;
+                //   //         });
+                //   //       },
+                //   //     )
+                //   //   ],
+                //   // ),
+                // ),
+                // Padding(
+                //     padding:
+                //         const EdgeInsets.only(left: 8.0, right: 8.0, top: 16),
+                //     child: Row(
+                //       children: [
+                //         Text('Colors'),
+                //         Spacer(),
+                //         _selectColors(
+                //           false,
+                //           func: () {},
+                //           color: Colors.grey,
+                //         ),
+                //         SizedBox(
+                //           width: 10.w,
+                //         ),
+                //         _selectColors(false, func: () {}, color: Colors.black),
+                //         SizedBox(
+                //           width: 10.w,
+                //         ),
+                //         _selectColors(false,
+                //             func: () {}, color: Color(0xFFB74FAF))
+                //       ],
+                //     )),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 8.0, right: 15.0, top: 8.0, bottom: 8.0),
@@ -310,6 +361,20 @@ class _LiveProductPageState extends State<LiveProductPage> {
                       child: Text('Sold By'),
                     )),
                 ListTile(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => StoreProfile(
+                            sellerName:
+                                Constants.productSlugModel.product.seller.slug,
+                            sellerId: Constants
+                                .productSlugModel.product.seller.id
+                                .toString()
+                                .trim(),
+                          ),
+                        ));
+                  },
                   contentPadding: EdgeInsets.all(0),
                   leading: CircleAvatar(
                     radius: 40,
@@ -373,8 +438,12 @@ class _LiveProductPageState extends State<LiveProductPage> {
                 ),
                 _expandedTitle('Shipping'),
                 _expandedTitle('Fine Print'),
-                ExpansionTile(
-                  tilePadding: EdgeInsets.only(right: 15, left: 15),
+                ListTile(
+                  onTap: () {
+                    getSeller();
+                  },
+                  contentPadding: EdgeInsets.only(right: 15, left: 15),
+                  trailing: Icon(Icons.keyboard_arrow_down_outlined),
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -408,13 +477,13 @@ class _LiveProductPageState extends State<LiveProductPage> {
                       ),
                     ],
                   ),
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(right: 15.0, left: 15.0),
-                      child: Text(
-                          'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
-                    ),
-                  ],
+                  // children: <Widget>[
+                  //   Padding(
+                  //     padding: const EdgeInsets.only(right: 15.0, left: 15.0),
+                  //     child: Text(
+                  //         'Nike Dri-FIT is  polyester fabric designed to help you keep dry so you can more comfortably work harder. longer. Read More'),
+                  //   ),
+                  // ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20, left: 20),
@@ -455,6 +524,23 @@ class _LiveProductPageState extends State<LiveProductPage> {
               ],
             ),
           );
+  }
+
+  getSeller() async {
+    bool result = await GetMethods.sellerInit(
+        sellerName: Constants.productSlugModel.product.seller.slug);
+
+    // if (result) {
+    //   if (mounted) {
+    //     setState(() {
+    //       hasData = true;
+    //     });
+    //   }
+    // } else if (mounted) {
+    //   setState(() {
+    //     hasData = false;
+    //   });
+    // }
   }
 
   Padding _item2(SlugProduct data) {
@@ -800,6 +886,336 @@ class _LiveProductPageState extends State<LiveProductPage> {
       ),
     );
   }
+
+  void getQuantitySheet({double height}) {
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20.0),
+            topLeft: Radius.circular(20.0),
+          ),
+        ),
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, state) {
+            return Container(
+                height: height * 0.7,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: 25.0, left: 40.0, bottom: 20.0),
+                        child: Text(
+                          'SELECT QUANTITY',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                      ),
+                      Divider(
+                        thickness: 2.0,
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: height * 0.5,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: BouncingScrollPhysics(),
+                            itemCount: 10,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    quantityCtr.text = (index + 1).toString();
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                splashColor: Colors.white10,
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: 25.0,
+                                          left: 40.0,
+                                          // bottom: 10.0
+                                        ),
+                                        child: Text(
+                                          '${index + 1}',
+                                          style: TextStyle(fontSize: 15.0),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 40.0,
+                                        ),
+                                        child: Divider(
+                                          thickness: 2.0,
+                                        ),
+                                      ),
+                                    ]),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ]));
+          });
+        });
+  }
+
+  void getSizeSheet({double height}) {
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20.0),
+            topLeft: Radius.circular(20.0),
+          ),
+        ),
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, state) {
+            return Container(
+                height: height * 0.45,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                  topLeft: Radius.circular(10.0),
+                )),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 25.0,
+                          left: 40.0,
+                        ),
+                        child: Text(
+                          'SIZE',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                      ),
+                      Divider(
+                        thickness: 2.0,
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: height * 0.3,
+                          child: ListView.builder(
+                            itemCount: Constants
+                                .productSlugModel.product.attributes.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    sizeCtr.text = Constants.productSlugModel
+                                        .product.attributes[index].sku
+                                        .toUpperCase();
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 25.0,
+                                            left: 40.0,
+                                            bottom: 10.0),
+                                        child: Text(
+                                          '${Constants.productSlugModel.product.attributes[index].sku.toUpperCase()}',
+                                          style: TextStyle(fontSize: 20.0),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 40.0,
+                                        ),
+                                        child: Divider(
+                                          thickness: 2.0,
+                                        ),
+                                      ),
+                                    ]),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ]));
+          });
+        });
+  }
+
+  void getColorSheet({double height}) {
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20.0),
+            topLeft: Radius.circular(20.0),
+          ),
+        ),
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, state) {
+            return Container(
+                height: height * 0.45,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                  topLeft: Radius.circular(10.0),
+                )),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: 25.0, left: 40.0, bottom: 20.0),
+                        child: Text(
+                          'Color',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                      ),
+                      Divider(
+                        thickness: 2.0,
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: height * 0.3,
+                          child: ListView.builder(
+                            itemCount: Constants
+                                .productSlugModel.product.attributes.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 25.0,
+                                        left: 40.0,
+                                      ),
+                                      child: Text(
+                                        'color',
+                                        style: TextStyle(fontSize: 20.0),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 40.0,
+                                      ),
+                                      child: Divider(
+                                        thickness: 2.0,
+                                      ),
+                                    ),
+                                  ]);
+                            },
+                          ),
+                        ),
+                      ),
+                    ]));
+          });
+        });
+  }
+
+  Widget getFields({double height}) {
+    return Padding(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: Column(
+          children: [
+            TextFormField(
+              readOnly: true,
+              controller: sizeCtr,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey)),
+                  labelText: 'SIZE',
+                  labelStyle: TextStyle(color: Colors.grey, fontSize: 20.0),
+                  suffixIcon: InkWell(
+                    onTap: () {
+                      getSizeSheet(height: height);
+                    },
+                    child: Icon(
+                      Icons.keyboard_arrow_down_outlined,
+                      color: Colors.grey,
+                    ),
+                  )),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            TextFormField(
+              readOnly: true,
+              controller: colorCtr,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey)),
+                  labelText: 'COLOR (SEE DESCRIPTION)',
+                  labelStyle: TextStyle(color: Colors.grey, fontSize: 20.0),
+                  suffixIcon: InkWell(
+                    onTap: () {
+                      getColorSheet(height: height);
+                    },
+                    child: Icon(
+                      Icons.keyboard_arrow_down_outlined,
+                      color: Colors.grey,
+                    ),
+                  )),
+            ),
+          ],
+        ));
+  }
+
+  Widget getRow({double height, double width}) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: Row(children: [
+        Container(
+          height: 60,
+          width: 80,
+          child: TextFormField(
+            readOnly: true,
+            controller: quantityCtr,
+            style: TextStyle(fontSize: 15.0),
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey)),
+                hintText: '1',
+                suffixIcon: InkWell(
+                  onTap: () {
+                    getQuantitySheet(height: height);
+                  },
+                  child: Icon(
+                    Icons.keyboard_arrow_down_outlined,
+                    color: Colors.grey,
+                  ),
+                )),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            width: width * 0.8,
+            height: 60,
+            margin: EdgeInsets.only(left: 10.0),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                border: Border.all(width: 1.5)),
+            child: MaterialButton(
+              onPressed: () {
+                _settingModalBottomSheet(context, addItem: addItem);
+              },
+              child: Text(
+                'Buy now',
+                style: TextStyle(fontSize: 20.0),
+              ),
+            ),
+          ),
+        )
+      ]),
+    );
+  }
 }
 
 void _settingModalBottomSheet(context, {List<String> addItem}) {
@@ -935,17 +1351,17 @@ void _settingModalBottomSheet(context, {List<String> addItem}) {
                         child: SlideAction(
                           key: _key,
                           onSubmit: () async {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-
-                            addItem.add(json
-                                .encode(Constants.productSlugModel.product));
-
-                            prefs.setStringList('list', addItem);
-
-                            prefs.get('list').forEach((element) {
-                              print(element);
-                            });
+                            // SharedPreferences prefs =
+                            //     await SharedPreferences.getInstance();
+                            //
+                            // addItem.add(json
+                            //     .encode(Constants.productSlugModel.product));
+                            //
+                            // prefs.setStringList('list', addItem);
+                            //
+                            // prefs.get('list').forEach((element) {
+                            //   print(element);
+                            // });
                             CustomToast(text: "Your order has been placed");
                             //   print(prefs.get('list'));
                             Future.delayed(

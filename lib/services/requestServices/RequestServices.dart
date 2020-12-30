@@ -226,12 +226,12 @@ class RequestServices {
     }
   }
 
-  static Future<SellerReviewModel> sellerReviews() async {
-    var response = await http.get(SellerUrl + '2/reviews');
+  static Future<SellerReviewModel> sellerReviews({String sId}) async {
+    var response = await http.get(SellerUrl + '${sId}/reviews'); //'2/reviews');
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;
-      print(map);
+      // print(map);
       return sellerReviewModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
@@ -239,12 +239,13 @@ class RequestServices {
     }
   }
 
-  static Future<SellerProductModel> sellerProducts() async {
-    var response = await http.get(SellerUrl + '2/products');
+  static Future<SellerProductModel> sellerProducts({String sId}) async {
+    var response =
+        await http.get(SellerUrl + '${sId}/products'); //'2/products');
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final String map = response.body;
-      print(map);
+      // print(map);
       return sellerProductModelFromJson(map);
     } else {
       print("Query failed: ${response.body} (${response.statusCode})");
@@ -252,13 +253,13 @@ class RequestServices {
     }
   }
 
-  static Future<SellerModel> sellerDetails() async {
+  static Future<SellerModel> sellerDetails({String saleName}) async {
     try {
-      var response = await http.get(SellerUrl + 'loovum');
+      var response = await http.get(SellerUrl + saleName); //'loovum');
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final String map = response.body;
-        print(map);
+        //  print(map);
         return sellerModelFromJson(map);
       } else {
         print("Query failed: ${response.body} (${response.statusCode})");

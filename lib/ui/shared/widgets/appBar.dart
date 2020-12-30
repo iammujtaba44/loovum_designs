@@ -28,7 +28,7 @@ appBarWithIcon(
     double width,
     String title = 'Settings',
     IconButton iconbtn,
-    IconButton trailingIcon}) {
+    Widget trailingIcon}) {
   return Container(
       alignment: Alignment.bottomCenter,
       height: height,

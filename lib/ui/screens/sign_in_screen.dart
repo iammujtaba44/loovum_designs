@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loovum_designs/services/requestServices/RequestGetters.dart';
 import 'package:loovum_designs/services/requestServices/constants.dart';
 import 'package:loovum_designs/ui/screens/home/home.dart';
+import 'package:loovum_designs/ui/screens/home/home_live_product_page%20copy.dart';
 import 'package:loovum_designs/ui/screens/sign_up_screen.dart';
 import 'package:loovum_designs/ui/shared/widgets/CustomToast.dart';
 import 'package:loovum_designs/ui/shared/widgets/heighRatio.dart';
@@ -123,6 +124,19 @@ class _SignInScreenState extends State<SignInScreen> {
                       CustomToast(text: 'Login Successfully');
                       emailController.clear();
                       passwordController.clear();
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => Scaffold(
+                      //               body: ListView(
+                      //                   physics: BouncingScrollPhysics(),
+                      //                   padding: EdgeInsets.all(0),
+                      //                   children: [
+                      //                 LiveProductPage(
+                      //                   slug: 'mesh-v-neck-tee',
+                      //                 )
+                      //               ]))),
+                      // );
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => Home()));
                     } else if (!result)

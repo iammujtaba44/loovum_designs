@@ -60,8 +60,8 @@ class GetMethods {
     }
   }
 
-  static Future<bool> sellerInit() async {
-    Constants.sellerModel = await RequestServices.sellerDetails();
+  static Future<bool> sellerInit({String sellerName}) async {
+    Constants.sellerModel = await RequestServices.sellerDetails(saleName: sellerName);
 
     if (Constants.sellerModel != null) {
       return true;
@@ -70,8 +70,8 @@ class GetMethods {
     }
   }
 
-  static Future<bool> sellerProductInit() async {
-    Constants.sellerProductModel = await RequestServices.sellerProducts();
+  static Future<bool> sellerProductInit({String sId}) async {
+    Constants.sellerProductModel = await RequestServices.sellerProducts(sId: sId);
 
     if (Constants.sellerProductModel != null) {
       return true;
@@ -80,8 +80,8 @@ class GetMethods {
     }
   }
 
-  static Future<bool> sellerReviewProduct() async {
-    Constants.sellerReviewModel = await RequestServices.sellerReviews();
+  static Future<bool> sellerReviewProduct({String sId}) async {
+    Constants.sellerReviewModel = await RequestServices.sellerReviews(sId: sId);
 
     if (Constants.sellerReviewModel != null) {
       return true;
